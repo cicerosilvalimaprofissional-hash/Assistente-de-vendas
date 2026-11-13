@@ -158,11 +158,12 @@ def dividir(texto, limite=LIMITE_TELEGRAM):
     return partes
 
 
-def publicar_telegram(texto):
+def publicar_telegram(texto, config):
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    chat = os.environ.get("TELEGRAM_CHAT_ID")
+    chat = os.environ.get("TELEGRAM_CHAT_ID") or config.get("telegram_canal", "").strip()
     if not token or not chat:
-        print("Telegram não configurado (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID); pulando publicação.")
+        print("Telegram não configurado (segredo TELEGRAM_BOT_TOKEN e 'telegram_canal' no config.json); "
+              "pulando publicação.")
         return
     for parte in dividir(texto):
         dados = urllib.parse.urlencode({"chat_id": chat, "text": parte,
@@ -182,7 +183,7 @@ def main():
     texto, arquivo, total = gerar(config, produtos, dt.date.today())
     print(f"{total} produtos → {arquivo.relative_to(BASE)}")
     if "--publicar" in sys.argv:
-        publicar_telegram(texto)
+        publicar_telegram(texto, config)
 
 
 if __name__ == "__main__":
