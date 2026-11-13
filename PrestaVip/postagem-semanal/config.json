@@ -1,0 +1,12 @@
+{
+  "nome_loja": "PrestaVip",
+  "url_loja": "https://SUA-LOJA.com.br",
+  "whatsapp_vendas": "5500000000000",
+  "utm": {
+    "utm_source": "postagem_semanal",
+    "utm_medium": "social",
+    "utm_campaign": "semanal"
+  },
+  "hashtags": ["#PrestaVip", "#Ofertas", "#Promoção"],
+  "chamada": "Confira os produtos da semana na PrestaVip! 🛒"
+}

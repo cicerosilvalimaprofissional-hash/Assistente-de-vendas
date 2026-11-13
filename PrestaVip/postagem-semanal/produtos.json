@@ -1,0 +1,18 @@
+[
+  {
+    "id": "001",
+    "nome": "Produto Exemplo 1",
+    "preco": "99,90",
+    "url": "/produto/produto-exemplo-1",
+    "descricao": "Descrição curta do produto exemplo 1.",
+    "ativo": true
+  },
+  {
+    "id": "002",
+    "nome": "Produto Exemplo 2",
+    "preco": "149,90",
+    "url": "/produto/produto-exemplo-2",
+    "descricao": "Descrição curta do produto exemplo 2.",
+    "ativo": true
+  }
+]

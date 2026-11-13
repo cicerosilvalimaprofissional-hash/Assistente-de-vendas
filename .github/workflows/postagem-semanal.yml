@@ -1,0 +1,32 @@
+name: Postagem semanal PrestaVip
+
+on:
+  schedule:
+    # Toda segunda-feira às 11:47 UTC (08:47 em Brasília)
+    - cron: "47 11 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  postar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Gerar links e publicar postagem
+        working-directory: PrestaVip/postagem-semanal
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 gerar_postagens.py --publicar
+      - name: Salvar postagem no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PrestaVip/postagem-semanal/links PrestaVip/postagem-semanal/postagens
+          git diff --cached --quiet || git commit -m "Postagem semanal $(date +%Y-%m-%d)"
+          git push
