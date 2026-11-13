@@ -8,21 +8,26 @@ Gera links de postagem (WhatsApp, Facebook, X, Telegram, LinkedIn, Pinterest) pa
 | Arquivo | Para que serve |
 |---|---|
 | `config.json` | URL da loja, número de WhatsApp de vendas, UTMs, hashtags e chamada da postagem |
-| `produtos.json` | Catálogo de produtos (`ativo: false` tira o produto da postagem) |
+| `produtos.json` | Catálogo de produtos, sincronizado com o site da loja (`ativo: false` tira o produto da postagem) |
 | `gerar_postagens.py` | Script que gera os links e a postagem |
 | `links/links_produtos.csv` / `.md` | Todos os links de compartilhamento por produto |
 | `postagens/AAAA-MM-DD.md` | Histórico das postagens semanais |
 
 ## Como usar
 
-1. Edite `config.json` com a URL real da loja (`url_loja`) e o WhatsApp de vendas.
-2. Cadastre os produtos em `produtos.json` (`url` pode ser caminho relativo ou URL completa).
-3. Rode localmente: `python3 gerar_postagens.py`
+Loja: https://minha-loja-xvrw.onrender.com
+
+- `python3 gerar_postagens.py --atualizar` lê todos os produtos do site, atualiza
+  `produtos.json` e gera os links e a postagem.
+- `python3 gerar_postagens.py` gera só a partir do `produtos.json` atual.
+
+Produto novo no site entra sozinho na próxima postagem. Para tirar um produto da
+postagem sem tirá-lo do site, mude `"ativo"` para `false` em `produtos.json`.
 
 ## Agendamento semanal
 
 O workflow `.github/workflows/postagem-semanal.yml` roda **toda segunda-feira às 08:47
-(Brasília)**, gera os links, salva a postagem em `postagens/` e faz commit.
+(Brasília)**, sincroniza os produtos com o site, gera os links, salva a postagem em `postagens/` e faz commit.
 Também pode ser disparado manualmente em *Actions → Postagem semanal PrestaVip → Run workflow*.
 
 ### Publicação automática no Telegram (opcional)

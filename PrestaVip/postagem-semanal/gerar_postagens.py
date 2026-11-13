@@ -3,6 +3,7 @@
 
 Uso:
     python3 gerar_postagens.py            # gera links e a postagem da semana
+    python3 gerar_postagens.py --atualizar # antes, lê os produtos do site da loja
     python3 gerar_postagens.py --publicar # também envia ao Telegram (se configurado)
 
 Saídas (nesta pasta):
@@ -15,8 +16,10 @@ TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID (opcionais).
 """
 import csv
 import datetime as dt
+import html
 import json
 import os
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -29,6 +32,49 @@ LIMITE_TELEGRAM = 4000
 def carregar(nome):
     with open(BASE / nome, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _campo(padrao, texto):
+    m = re.search(padrao, texto, re.S)
+    return html.unescape(m.group(1)).strip() if m else ""
+
+
+def atualizar_produtos(config):
+    """Lê a vitrine da loja e atualiza produtos.json (mantém 'ativo' de cada produto)."""
+    loja = config["url_loja"].rstrip("/")
+    req = urllib.request.Request(loja + "/", headers={"User-Agent": "postagem-semanal/1.0"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        pagina = r.read().decode("utf-8")
+    cards = re.findall(r'<article class="card" id="p-([^"]+)">(.*?)</article>', pagina, re.S)
+    if not cards:
+        print("Nenhum produto encontrado no site; mantendo produtos.json atual.")
+        return
+    anteriores = {p["id"]: p for p in carregar("produtos.json")}
+    produtos = []
+    for slug, c in cards:
+        imagem = _campo(r'class="cover" src="([^"]+)"', c)
+        produtos.append({
+            "id": slug,
+            "nome": _campo(r"<h3>(.*?)</h3>", c),
+            "preco": _campo(r'class="price">R\$\s*([^<]+)<', c),
+            "url": f"/#p-{slug}",
+            "descricao": _campo(r'class="desc">(.*?)</p>', c),
+            "selo": _campo(r'class="badge">(.*?)</span>', c),
+            "imagem": urllib.parse.urljoin(loja + "/", imagem) if imagem else "",
+            "link_pagamento": _campo(r'href="(https://pag\.ae/[^"]+)"', c),
+            "ativo": anteriores.get(slug, {}).get("ativo", True),
+        })
+    novos = [p["nome"] for p in produtos if p["id"] not in anteriores]
+    with open(BASE / "produtos.json", "w", encoding="utf-8") as f:
+        json.dump(produtos, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    print(f"{len(produtos)} produtos lidos do site" + (f"; novos: {', '.join(novos)}" if novos else ""))
+
+
+def resumo(texto):
+    """Primeira frase da descrição, para a postagem não ficar longa demais."""
+    m = re.match(r"(.+?[.!?])(\s|$)", texto)
+    return m.group(1) if m else texto
 
 
 def url_produto(config, produto):
@@ -88,8 +134,10 @@ def gerar(config, produtos, hoje):
     for p in ativos:
         bloco = f"✅ {p['nome']} — R$ {p['preco']}"
         if p.get("descricao"):
-            bloco += f"\n{p['descricao']}"
-        bloco += f"\n👉 {url_produto(config, p)}"
+            bloco += f"\n{resumo(p['descricao'])}"
+        bloco += f"\n👉 Ver na loja: {url_produto(config, p)}"
+        if p.get("link_pagamento"):
+            bloco += f"\n💳 Comprar: {p['link_pagamento']}"
         post += [bloco, ""]
     post.append(" ".join(config.get("hashtags", [])))
     texto = "\n".join(post).strip() + "\n"
@@ -127,7 +175,10 @@ def publicar_telegram(texto):
 
 
 def main():
-    config, produtos = carregar("config.json"), carregar("produtos.json")
+    config = carregar("config.json")
+    if "--atualizar" in sys.argv:
+        atualizar_produtos(config)
+    produtos = carregar("produtos.json")
     texto, arquivo, total = gerar(config, produtos, dt.date.today())
     print(f"{total} produtos → {arquivo.relative_to(BASE)}")
     if "--publicar" in sys.argv:

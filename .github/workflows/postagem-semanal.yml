@@ -22,11 +22,11 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python3 gerar_postagens.py --publicar
+        run: python3 gerar_postagens.py --atualizar --publicar
       - name: Salvar postagem no repositório
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add PrestaVip/postagem-semanal/links PrestaVip/postagem-semanal/postagens
+          git add PrestaVip/postagem-semanal/produtos.json PrestaVip/postagem-semanal/links PrestaVip/postagem-semanal/postagens
           git diff --cached --quiet || git commit -m "Postagem semanal $(date +%Y-%m-%d)"
           git push
