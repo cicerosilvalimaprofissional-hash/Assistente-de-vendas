@@ -32,9 +32,10 @@ Também pode ser disparado manualmente em *Actions → Postagem semanal PrestaVi
 
 ### Publicação automática no Telegram (opcional)
 
-Em *Settings → Secrets and variables → Actions*, crie:
+1. Crie o bot no @BotFather e adicione-o como administrador do canal.
+2. Em *Settings → Secrets and variables → Actions*, crie o segredo `TELEGRAM_BOT_TOKEN`
+   com o token do bot.
+3. Em `config.json`, preencha `telegram_canal` com `@nomedocanal` (ou o ID `-100...`
+   de um canal privado).
 
-- `TELEGRAM_BOT_TOKEN` — token do bot (via @BotFather)
-- `TELEGRAM_CHAT_ID` — ID do canal/grupo (o bot precisa ser admin do canal)
-
-Sem esses segredos o workflow só gera e salva a postagem, sem publicar.
+Sem o token e o canal o workflow só gera e salva a postagem, sem publicar.
