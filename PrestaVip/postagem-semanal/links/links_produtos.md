@@ -1,6 +1,16 @@
 # Links de postagem — PrestaVip
 
-Atualizado em 13/11/2026 · 15 produtos ativos
+Atualizado em 16/11/2026 · 16 produtos ativos
+
+## PrestaVip Marketing — Painel de Marketing com IA — R$ 47,00
+- **produto**: https://minha-loja-xvrw.onrender.com/?utm_source=postagem_semanal&utm_medium=social&utm_campaign=semanal&utm_content=prestavip-marketing#p-prestavip-marketing
+- **whatsapp**: https://wa.me/?text=PrestaVip%20Marketing%20%E2%80%94%20Painel%20de%20Marketing%20com%20IA%20por%20R%24%2047%2C00%20na%20PrestaVip%20https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing
+- **facebook**: https://www.facebook.com/sharer/sharer.php?u=https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing
+- **x_twitter**: https://twitter.com/intent/tweet?text=PrestaVip%20Marketing%20%E2%80%94%20Painel%20de%20Marketing%20com%20IA%20por%20R%24%2047%2C00%20na%20PrestaVip&url=https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing
+- **telegram**: https://t.me/share/url?url=https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing&text=PrestaVip%20Marketing%20%E2%80%94%20Painel%20de%20Marketing%20com%20IA%20por%20R%24%2047%2C00%20na%20PrestaVip
+- **linkedin**: https://www.linkedin.com/sharing/share-offsite/?url=https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing
+- **pinterest**: https://pinterest.com/pin/create/button/?url=https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing&description=PrestaVip%20Marketing%20%E2%80%94%20Painel%20de%20Marketing%20com%20IA%20por%20R%24%2047%2C00%20na%20PrestaVip
+- **whatsapp_vendedor**: https://wa.me/5511913634162?text=Ol%C3%A1%21%20Tenho%20interesse%20em%3A%20PrestaVip%20Marketing%20%E2%80%94%20Painel%20de%20Marketing%20com%20IA%20%28https%3A//minha-loja-xvrw.onrender.com/%3Futm_source%3Dpostagem_semanal%26utm_medium%3Dsocial%26utm_campaign%3Dsemanal%26utm_content%3Dprestavip-marketing%23p-prestavip-marketing%29
 
 ## Robô WhatsApp IA + Manual — R$ 50,00
 - **produto**: https://minha-loja-xvrw.onrender.com/?utm_source=postagem_semanal&utm_medium=social&utm_campaign=semanal&utm_content=robo-whatsapp-ia#p-robo-whatsapp-ia

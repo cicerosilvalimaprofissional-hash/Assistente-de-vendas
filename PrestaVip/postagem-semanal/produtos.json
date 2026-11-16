@@ -1,5 +1,16 @@
 [
   {
+    "id": "prestavip-marketing",
+    "nome": "PrestaVip Marketing — Painel de Marketing com IA",
+    "preco": "47,00",
+    "url": "/#p-prestavip-marketing",
+    "descricao": "Painel com inteligência artificial que escreve anúncios, legendas, roteiros de vídeo e campanhas para o seu negócio, com o seu logo, os seus dados e os seus produtos. Você só revisa, copia e publica.",
+    "selo": "Novo · Com IA",
+    "imagem": "https://minha-loja-xvrw.onrender.com/capas/capa-prestavip-marketing.jpg",
+    "link_pagamento": "https://pag.ae/82k_6xRNM",
+    "ativo": true
+  },
+  {
     "id": "robo-whatsapp-ia",
     "nome": "Robô WhatsApp IA + Manual",
     "preco": "50,00",
