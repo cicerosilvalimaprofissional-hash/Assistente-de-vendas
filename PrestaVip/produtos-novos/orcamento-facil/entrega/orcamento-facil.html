@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#24316b">
+<title>Orçamento Fácil · PrestaVip</title>
+<style>
+:root{--bg:#f3f4f8;--card:#fff;--fg:#161b33;--muted:#5d6482;--line:#dcdfeb;--brand:#24316b;--brand-2:#3b54c4;--brand-fg:#fff;--ok:#1d7a46;--ok-bg:#e3f4ea;--warn:#9a6400;--warn-bg:#fff2d6;--bad:#b42318;--bad-bg:#fde7e4;--accent:#f5c518}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1020;--card:#171a31;--fg:#e7e9f6;--muted:#a1a7c6;--line:#2a2f52;--brand:#7d93ff;--brand-2:#9fb0ff;--brand-fg:#0b0f2a;--ok:#5bd08f;--ok-bg:#12321f;--warn:#f0bb4b;--warn-bg:#3a2c0b;--bad:#ff8a7a;--bad-bg:#3d1712;color-scheme:dark}}
+*{box-sizing:border-box} [hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--brand);color:var(--brand-fg);padding:14px max(16px,env(safe-area-inset-left))}
+@media (prefers-color-scheme:dark){header{background:#1d2450;color:#fff}}
+.top{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font-size:19px} .top small{display:block;opacity:.85;font-size:12.5px}
+main{max-width:1200px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left)) 60px;display:grid;gap:16px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:600}
+.tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.editor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:16px;align-items:start}
+@media (max-width:900px){.editor{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:12px;min-width:0}
+.card h2{margin:0;font-size:16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+label{display:grid;gap:4px;font-size:13.5px;color:var(--muted);font-weight:600}
+input,select,textarea{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand-2);outline-offset:1px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:9px;cursor:pointer;font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-fg)}
+.btn{border:1px solid var(--brand);background:var(--brand);color:var(--brand-fg);border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--brand)}
+.btn.wa{background:#1f9e55;border-color:#1f9e55;color:#fff}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:6px 10px;font-size:13.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.itens{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) 70px 110px 34px;gap:6px;align-items:center}
+@media (max-width:520px){.item{grid-template-columns:1fr 64px 100px 34px}}
+.item input{padding:8px 9px}
+.hint{color:var(--muted);font-size:13px;margin:0}
+.tot{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.tot b{font-size:20px}
+/* Documento (A4) */
+.folha-wrap{overflow-x:auto}
+.folha{background:#fff;color:#1b1f2e;width:100%;max-width:794px;min-height:1050px;margin:0 auto;padding:44px 48px;box-shadow:0 8px 30px rgba(20,25,60,.15);border-radius:4px;font-size:13.5px;display:flex;flex-direction:column;gap:18px}
+.f-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:3px solid var(--doc,#24316b);padding-bottom:16px}
+.f-emp{display:flex;gap:14px;align-items:center;min-width:0}
+.f-emp img{max-width:96px;max-height:72px;object-fit:contain}
+.f-emp b{font-size:18px;display:block;color:#11152a}
+.f-emp span{color:#5d6482;font-size:12.5px;display:block}
+.f-num{text-align:right;flex:none}
+.f-num .t{font-size:20px;font-weight:800;color:var(--doc,#24316b);letter-spacing:.04em;text-transform:uppercase}
+.f-num span{display:block;color:#5d6482;font-size:12.5px}
+.f-sec h3{margin:0 0 6px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:#5d6482}
+.f-tab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.f-tab th{background:#f1f3fa;color:#3a4160;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:8px}
+.f-tab td{padding:8px;border-bottom:1px solid #e6e8f0;vertical-align:top}
+.f-tab .r{text-align:right;white-space:nowrap}
+.f-tot{margin-left:auto;min-width:240px;display:grid;gap:4px;font-variant-numeric:tabular-nums}
+.f-tot div{display:flex;justify-content:space-between;gap:20px}
+.f-tot .g{border-top:2px solid #11152a;padding-top:6px;font-size:17px;font-weight:800}
+.f-box{background:#f7f8fc;border-radius:8px;padding:12px 14px;white-space:pre-wrap}
+.f-recibo{font-size:15px;line-height:1.75}
+.f-ass{margin-top:auto;display:flex;justify-content:space-around;gap:30px;padding-top:50px}
+.f-ass div{flex:1;max-width:260px;border-top:1px solid #11152a;padding-top:6px;text-align:center;font-size:12.5px;color:#3a4160}
+.f-rod{color:#8a90ad;font-size:11px;text-align:center}
+/* Histórico */
+.list{display:grid;gap:8px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;cursor:pointer;width:100%;text-align:left}
+.row:hover{border-color:var(--brand-2)}
+.row .n{font-weight:700} .row .s{color:var(--muted);font-size:13px} .row .v{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.info{background:var(--line);color:var(--fg)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi span{display:block;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em}
+.kpi b{font-size:21px;font-variant-numeric:tabular-nums}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);display:grid;gap:10px;justify-items:center}
+.logo-prev{max-width:120px;max-height:80px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50}
+footer{color:var(--muted);font-size:12.5px;text-align:center;padding:10px}
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  header,.tabs,footer,.toast,#pHist,#pConfig,.editor>.form,.no-print{display:none!important}
+  main{padding:0;max-width:none}.editor{display:block}.card.prev{border:0;padding:0;background:#fff}
+  .folha{box-shadow:none;border-radius:0;max-width:none;min-height:297mm;padding:16mm 16mm}
+}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1 id="titulo">Orçamento Fácil</h1><small>Orçamentos e recibos profissionais · PrestaVip</small></div>
+<button class="btn ghost sm" style="color:#fff;border-color:rgba(255,255,255,.55)" type="button" id="btnNovo">+ Novo documento</button></div></header>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="pEditor" type="button">Criar</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="pHist" type="button">Meus documentos</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="pConfig" type="button">Meu negócio e backup</button>
+  </div>
+
+  <section id="pEditor">
+    <div class="editor">
+      <form class="card form" id="fDoc" autocomplete="off">
+        <div class="seg" role="group" aria-label="Tipo de documento">
+          <button type="button" data-tipo="orc" aria-pressed="true">Orçamento</button>
+          <button type="button" data-tipo="rec" aria-pressed="false">Recibo</button>
+        </div>
+        <p class="hint" id="avisoNegocio" hidden>Preencha os dados do seu negócio em <b>Meu negócio e backup</b> para eles aparecerem no documento.</p>
+        <h2>Cliente</h2>
+        <div class="grid2">
+          <label>Nome do cliente<input id="dCliente" maxlength="80" placeholder="Ex.: Maria Oliveira"></label>
+          <label>WhatsApp do cliente<input id="dTel" inputmode="tel" placeholder="(11) 91234-5678"></label>
+          <label>CPF/CNPJ do cliente (opcional)<input id="dDoc" maxlength="20"></label>
+          <label>Endereço (opcional)<input id="dEnd" maxlength="120"></label>
+        </div>
+        <h2>Itens e serviços</h2>
+        <div class="item hint" aria-hidden="true"><span>Descrição</span><span>Qtd.</span><span>Valor unit.</span><span></span></div>
+        <div class="itens" id="itens"></div>
+        <div class="bar"><button class="btn ghost sm" type="button" id="addItem">+ Adicionar item</button></div>
+        <div class="grid2">
+          <label>Desconto (R$)<input id="dDesc" inputmode="decimal" placeholder="0,00"></label>
+          <label>Data<input id="dData" type="date"></label>
+          <label id="lbValid">Validade do orçamento (dias)<input id="dValid" type="number" min="1" max="365" value="15"></label>
+          <label>Forma de pagamento<input id="dPag" maxlength="80" placeholder="Ex.: Pix, 50% na aprovação e 50% na entrega"></label>
+          <label id="lbPrazo">Prazo de entrega/execução<input id="dPrazo" maxlength="60" placeholder="Ex.: 5 dias úteis"></label>
+        </div>
+        <label>Observações<textarea id="dObs" rows="3" maxlength="600" placeholder="Ex.: material incluso, garantia de 90 dias"></textarea></label>
+        <div class="tot"><span>Total</span><b id="totForm">R$ 0,00</b></div>
+        <div class="bar">
+          <button class="btn" type="button" id="btnSalvar">Salvar</button>
+          <button class="btn ghost" type="button" id="btnPdf">Imprimir / salvar PDF</button>
+          <button class="btn wa" type="button" id="btnWa">Enviar no WhatsApp</button>
+        </div>
+        <p class="hint">Para enviar o PDF: toque em <b>Imprimir / salvar PDF</b>, escolha <b>Salvar como PDF</b> e anexe o arquivo na conversa do cliente.</p>
+      </form>
+      <div class="card prev"><div class="folha-wrap"><article class="folha" id="folha"></article></div></div>
+    </div>
+  </section>
+
+  <section id="pHist" hidden>
+    <div class="kpis" style="margin-bottom:12px">
+      <div class="kpi"><span>Orçamentos em aberto</span><b id="kAbertos">0</b></div>
+      <div class="kpi"><span>Aprovados no mês</span><b id="kAprov">R$ 0,00</b></div>
+      <div class="kpi"><span>Recibos no mês</span><b id="kRec">R$ 0,00</b></div>
+      <div class="kpi"><span>Taxa de aprovação</span><b id="kTaxa">–</b></div>
+    </div>
+    <div class="bar" style="margin-bottom:10px"><input type="search" id="busca" placeholder="Buscar por cliente ou número" style="flex:1 1 220px" aria-label="Buscar documento">
+      <select id="filtro" style="width:auto" aria-label="Filtrar"><option value="todos">Todos</option><option value="aberto">Orçamentos em aberto</option><option value="aprovado">Aprovados</option><option value="recusado">Recusados</option><option value="rec">Recibos</option></select></div>
+    <div class="list" id="lista"></div>
+  </section>
+
+  <section id="pConfig" hidden>
+    <form class="card" id="fConfig">
+      <h2>Dados do seu negócio</h2>
+      <p class="hint">Aparecem no topo de todos os orçamentos e recibos.</p>
+      <div class="grid2">
+        <label>Nome do negócio ou profissional<input id="cNome" maxlength="70" placeholder="Ex.: João Silva Elétrica"></label>
+        <label>CPF ou CNPJ<input id="cDoc" maxlength="20"></label>
+        <label>Telefone / WhatsApp<input id="cTel" maxlength="30"></label>
+        <label>E-mail<input id="cEmail" maxlength="80"></label>
+        <label>Endereço ou cidade<input id="cEnd" maxlength="120"></label>
+        <label>Chave Pix<input id="cPix" maxlength="80"></label>
+        <label>Cor do documento<input id="cCor" type="color" value="#24316b"></label>
+        <label>Próximo número<input id="cNum" type="number" min="1" value="1"></label>
+      </div>
+      <div class="bar"><img id="logoPrev" class="logo-prev" alt="Logo" hidden>
+        <label class="btn ghost" style="display:inline-block;cursor:pointer">Escolher logo<input type="file" id="cLogo" accept="image/*" hidden></label>
+        <button class="btn danger sm" type="button" id="cLogoX" hidden>Remover logo</button></div>
+      <label>Observação padrão (vem preenchida em todo documento novo)<textarea id="cObs" rows="2" maxlength="400" placeholder="Ex.: Garantia de 90 dias para o serviço."></textarea></label>
+      <div class="bar"><button class="btn" type="submit">Salvar dados</button></div>
+    </form>
+    <div class="card" style="margin-top:16px">
+      <h2>Backup</h2>
+      <p class="hint">Tudo fica salvo só neste navegador, neste aparelho. Baixe um backup toda semana e guarde no Google Drive, no e-mail ou no WhatsApp. Para usar em outro aparelho, abra o app lá e restaure o backup.</p>
+      <div class="bar"><button class="btn" id="btnBackup" type="button">Baixar backup</button>
+        <label class="btn ghost" style="display:inline-block;cursor:pointer">Restaurar backup<input type="file" id="fRestaurar" accept=".json,application/json" hidden></label>
+        <button class="btn danger" id="btnZerar" type="button">Apagar tudo</button></div>
+    </div>
+  </section>
+  <footer>Orçamento Fácil · PrestaVip · Funciona sem internet. Seus dados não saem do seu aparelho.</footer>
+</main>
+<script>
+"use strict";
+const KEY = "prestavip.orcamento.v1";
+const $ = s => document.querySelector(s);
+const z = n => String(n).padStart(2,"0");
+const isoDate = d => d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());
+const hoje = () => isoDate(new Date());
+const addDias = (iso,n) => { const d = new Date(iso+"T12:00:00"); d.setDate(d.getDate()+Number(n)); return isoDate(d); };
+const br = iso => iso ? iso.split("-").reverse().join("/") : "";
+function centavos(t){ let s = String(t ?? "").trim().replace(/[R$\s]/g,""); if(!s) return 0; if(s.includes(",")) s = s.replace(/\./g,"").replace(",","."); const v = Math.round(parseFloat(s)*100); return isFinite(v) ? v : NaN; }
+function qtd(t){ const v = parseFloat(String(t ?? "").replace(",",".")); return isFinite(v) ? v : NaN; }
+const fmt = c => "R$ "+(c/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const num = c => (c/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function toast(t){ const el = document.createElement("div"); el.className = "toast"; el.textContent = t; document.body.append(el); setTimeout(() => el.remove(), 2600); }
+
+/* Valor por extenso (reais e centavos), até 999 milhões. */
+const UN = ["","um","dois","três","quatro","cinco","seis","sete","oito","nove","dez","onze","doze","treze","quatorze","quinze","dezesseis","dezessete","dezoito","dezenove"];
+const DZ = ["","","vinte","trinta","quarenta","cinquenta","sessenta","setenta","oitenta","noventa"];
+const CT = ["","cento","duzentos","trezentos","quatrocentos","quinhentos","seiscentos","setecentos","oitocentos","novecentos"];
+function ate999(n){ if(n === 0) return ""; if(n === 100) return "cem"; const c = Math.floor(n/100), r = n%100, p = [];
+  if(c) p.push(CT[c]); if(r){ if(r < 20) p.push(UN[r]); else { const d = Math.floor(r/10), u = r%10; p.push(u ? DZ[d]+" e "+UN[u] : DZ[d]); } } return p.join(" e "); }
+function inteiroExtenso(n){
+  if(n === 0) return "zero";
+  const g = [[Math.floor(n/1e6), "mi"], [Math.floor(n/1e3)%1000, "mil"], [n%1000, ""]].filter(x => x[0]);
+  let out = "";
+  g.forEach(([v, tipo], i) => {
+    const txt = tipo === "mi" ? (v === 1 ? "um milhão" : ate999(v)+" milhões") : tipo === "mil" ? (v === 1 ? "mil" : ate999(v)+" mil") : ate999(v);
+    if(i){ const ultimo = i === g.length - 1; out += ultimo && (v < 100 || v % 100 === 0) ? " e " : (g[i-1][1] === "mi" ? ", " : " "); }
+    out += txt;
+  });
+  return out;
+}
+function extenso(cent){
+  const reais = Math.floor(cent/100), c = cent%100; const p = [];
+  if(reais){ const t = inteiroExtenso(reais); const de = reais >= 1e6 && reais % 1e6 === 0 ? " de" : ""; p.push(t + de + (reais === 1 ? " real" : " reais")); }
+  if(c) p.push(inteiroExtenso(c) + (c === 1 ? " centavo" : " centavos"));
+  return p.length ? p.join(" e ") : "zero real";
+}
+
+let db = carregar();
+function vazio(){ return {config:{nome:"",doc:"",tel:"",email:"",end:"",pix:"",cor:"#24316b",num:1,logo:"",obs:""}, docs:[]}; }
+function carregar(){ try{ const d = JSON.parse(localStorage.getItem(KEY)); if(d && Array.isArray(d.docs)) return {config:Object.assign(vazio().config, d.config), docs:d.docs}; }catch(e){} return vazio(); }
+function salvarDb(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); return true; }catch(e){ toast("Não foi possível salvar. A logo pode ser grande demais."); return false; } }
+
+/* Documento em edição */
+let atual = novoDoc("orc");
+function novoDoc(tipo){ return {id:null, tipo, numero:null, status: tipo === "orc" ? "aberto" : "pago", cliente:"", tel:"", cdoc:"", end:"", itens:[{d:"",q:"1",v:""}], desc:"", data:hoje(), valid:15, pag:"", prazo:"", obs: db?.config?.obs || "", origem:null}; }
+function totais(d){ const sub = d.itens.reduce((s,i) => { const q = qtd(i.q), v = centavos(i.v); return s + (isFinite(q) && isFinite(v) ? Math.round(q*v) : 0); }, 0);
+  const desc = Math.max(0, centavos(d.desc) || 0); return {sub, desc: Math.min(desc, sub), total: Math.max(0, sub - desc)}; }
+function codigo(d){ return (d.tipo === "orc" ? "ORC-" : "REC-") + String(d.numero ?? db.config.num).padStart(4,"0"); }
+
+function paraForm(){
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tipo === atual.tipo));
+  $("#dCliente").value = atual.cliente; $("#dTel").value = atual.tel; $("#dDoc").value = atual.cdoc; $("#dEnd").value = atual.end;
+  $("#dDesc").value = atual.desc; $("#dData").value = atual.data; $("#dValid").value = atual.valid; $("#dPag").value = atual.pag; $("#dPrazo").value = atual.prazo; $("#dObs").value = atual.obs;
+  $("#lbValid").hidden = atual.tipo !== "orc"; $("#lbPrazo").hidden = atual.tipo !== "orc";
+  renderItens(); atualizar();
+}
+function doForm(){
+  Object.assign(atual, {cliente:$("#dCliente").value.trim(), tel:$("#dTel").value.trim(), cdoc:$("#dDoc").value.trim(), end:$("#dEnd").value.trim(),
+    desc:$("#dDesc").value, data:$("#dData").value || hoje(), valid: parseInt($("#dValid").value) || 15, pag:$("#dPag").value.trim(), prazo:$("#dPrazo").value.trim(), obs:$("#dObs").value.trim()});
+  atual.itens = [...document.querySelectorAll("#itens .item")].map(r => ({d:r.querySelector(".i-d").value, q:r.querySelector(".i-q").value, v:r.querySelector(".i-v").value}));
+}
+function renderItens(){
+  $("#itens").innerHTML = atual.itens.map((i,k) => '<div class="item"><input class="i-d" maxlength="140" placeholder="Ex.: Instalação de chuveiro" value="'+esc(i.d)+'" aria-label="Descrição do item '+(k+1)+'"><input class="i-q" inputmode="decimal" value="'+esc(i.q)+'" aria-label="Quantidade"><input class="i-v" inputmode="decimal" placeholder="0,00" value="'+esc(i.v)+'" aria-label="Valor unitário"><button class="btn danger sm" type="button" data-rm="'+k+'" aria-label="Remover item">×</button></div>').join("");
+  document.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { doForm(); atual.itens.splice(+b.dataset.rm, 1); if(!atual.itens.length) atual.itens.push({d:"",q:"1",v:""}); renderItens(); atualizar(); });
+}
+function atualizar(){ doForm(); $("#totForm").textContent = fmt(totais(atual).total); renderFolha(); $("#avisoNegocio").hidden = !!db.config.nome; }
+
+function renderFolha(){
+  const c = db.config, d = atual, t = totais(d), orc = d.tipo === "orc";
+  const emp = [c.doc && (c.doc.replace(/\D/g,"").length > 11 ? "CNPJ " : "CPF ")+c.doc, c.tel, c.email, c.end].filter(Boolean).map(esc).join(" · ");
+  const itens = d.itens.filter(i => i.d.trim() || centavos(i.v));
+  const linhas = itens.map(i => { const q = qtd(i.q), v = centavos(i.v); const tot = isFinite(q) && isFinite(v) ? Math.round(q*v) : 0;
+    return '<tr><td>'+esc(i.d || "—")+'</td><td class="r">'+(isFinite(q) ? q.toLocaleString("pt-BR") : "–")+'</td><td class="r">'+(isFinite(v) ? num(v) : "–")+'</td><td class="r">'+num(tot)+'</td></tr>'; }).join("");
+  const refItens = itens.map(i => i.d.trim()).filter(Boolean).join("; ");
+  const f = $("#folha"); f.style.setProperty("--doc", c.cor || "#24316b");
+  f.innerHTML =
+   '<div class="f-top"><div class="f-emp">'+(c.logo ? '<img src="'+c.logo+'" alt="">' : '')+'<div><b>'+esc(c.nome || "Nome do seu negócio")+'</b><span>'+(emp || "Preencha os dados em Meu negócio")+'</span></div></div>'+
+   '<div class="f-num"><div class="t">'+(orc ? "Orçamento" : "Recibo")+'</div><span>Nº '+codigo(d)+'</span><span>Data: '+br(d.data)+'</span>'+(orc ? '<span>Válido até: '+br(addDias(d.data, d.valid))+'</span>' : '')+'</div></div>'+
+   '<div class="f-sec"><h3>'+(orc ? "Cliente" : "Recebido de")+'</h3><div><b>'+esc(d.cliente || "Nome do cliente")+'</b>'+[d.cdoc && "CPF/CNPJ "+d.cdoc, d.tel, d.end].filter(Boolean).map(x => '<br>'+esc(x)).join("")+'</div></div>'+
+   (orc ? '' : '<div class="f-recibo">Recebi de <b>'+esc(d.cliente || "________________")+'</b> a importância de <b>'+fmt(t.total)+'</b> ('+extenso(t.total)+'), referente a '+esc(refItens || "________________")+'.'+(d.pag ? ' Forma de pagamento: '+esc(d.pag)+'.' : '')+'</div>')+
+   '<div class="f-sec"><h3>'+(orc ? "Itens e serviços" : "Discriminação")+'</h3><table class="f-tab"><thead><tr><th>Descrição</th><th class="r">Qtd.</th><th class="r">Valor unit. (R$)</th><th class="r">Total (R$)</th></tr></thead><tbody>'+(linhas || '<tr><td colspan="4" style="color:#8a90ad">Adicione os itens no formulário.</td></tr>')+'</tbody></table></div>'+
+   '<div class="f-tot"><div><span>Subtotal</span><span>'+fmt(t.sub)+'</span></div>'+(t.desc ? '<div><span>Desconto</span><span>− '+fmt(t.desc)+'</span></div>' : '')+'<div class="g"><span>Total</span><span>'+fmt(t.total)+'</span></div></div>'+
+   ((orc && (d.pag || d.prazo)) ? '<div class="f-sec"><h3>Condições</h3><div>'+(d.pag ? 'Pagamento: '+esc(d.pag) : '')+(d.pag && d.prazo ? '<br>' : '')+(d.prazo ? 'Prazo: '+esc(d.prazo) : '')+'</div></div>' : '')+
+   (c.pix ? '<div class="f-sec"><h3>Pix</h3><div>'+esc(c.pix)+'</div></div>' : '')+
+   (d.obs ? '<div class="f-sec"><h3>Observações</h3><div class="f-box">'+esc(d.obs)+'</div></div>' : '')+
+   '<div class="f-ass">'+(orc ? '<div>'+esc(c.nome || "Responsável")+'</div><div>De acordo: '+esc(d.cliente || "cliente")+'</div>' : '<div>'+esc(c.nome || "Assinatura")+(c.doc ? '<br>'+esc(c.doc) : '')+'</div>')+'</div>'+
+   '<div class="f-rod">'+(orc ? "Orçamento sem valor fiscal." : "Este recibo não substitui a nota fiscal, quando ela for exigida.")+'</div>';
+}
+
+function salvarAtual(silencioso){
+  doForm(); if(!atual.cliente){ toast("Preencha o nome do cliente."); $("#dCliente").focus(); return false; }
+  const t = totais(atual); if(!(t.total > 0)){ toast("Adicione pelo menos um item com valor."); return false; }
+  if(!atual.id){ atual.id = uid(); atual.numero = db.config.num; db.config.num++; atual.criado = Date.now(); db.docs.push(structuredClone(atual)); }
+  else { const i = db.docs.findIndex(x => x.id === atual.id); db.docs[i] = structuredClone(atual); }
+  if(!salvarDb()) return false; renderFolha(); renderHist(); if(!silencioso) toast(codigo(atual)+" salvo."); return true;
+}
+function telWa(tel){ let d = String(tel||"").replace(/\D/g,""); if(!d) return ""; if(d.length <= 11) d = "55"+d.replace(/^0+/,""); return d; }
+function enviarWa(){
+  if(!salvarAtual(true)) return; const c = db.config, d = atual, t = totais(d), orc = d.tipo === "orc";
+  const itens = d.itens.filter(i => i.d.trim()).map(i => { const tot = Math.round(qtd(i.q)*centavos(i.v)); return "• "+i.d.trim()+(qtd(i.q) !== 1 ? " ("+i.q+"x)" : "")+": "+fmt(tot); }).join("\n");
+  const msg = (orc ? "Olá, "+d.cliente.split(" ")[0]+"! Segue o orçamento "+codigo(d)+(c.nome ? " de "+c.nome : "")+":\n\n" : "Olá, "+d.cliente.split(" ")[0]+"! Confirmo o recebimento de "+fmt(t.total)+" ("+codigo(d)+"):\n\n")
+    + itens + (t.desc ? "\nDesconto: − "+fmt(t.desc) : "") + "\n*Total: "+fmt(t.total)+"*"
+    + (orc ? "\n\nVálido até "+br(addDias(d.data, d.valid))+"."+(d.pag ? "\nPagamento: "+d.pag : "")+(d.prazo ? "\nPrazo: "+d.prazo : "") : "")
+    + (orc && c.pix ? "\nPix: "+c.pix : "") + (orc ? "\n\nPosso confirmar?" : "\n\nObrigado pela preferência!");
+  const n = telWa(d.tel); window.open((n ? "https://wa.me/"+n : "https://wa.me/")+"?text="+encodeURIComponent(msg), "_blank", "noopener");
+}
+
+function statusPill(d){ if(d.tipo === "rec") return '<span class="pill info">Recibo</span>';
+  if(d.status === "aprovado") return '<span class="pill ok">Aprovado</span>'; if(d.status === "recusado") return '<span class="pill bad">Recusado</span>';
+  return addDias(d.data, d.valid) < hoje() ? '<span class="pill warn">Vencido</span>' : '<span class="pill warn">Aguardando</span>'; }
+function renderHist(){
+  const mes = hoje().slice(0,7), orcs = db.docs.filter(d => d.tipo === "orc");
+  $("#kAbertos").textContent = orcs.filter(d => d.status === "aberto").length;
+  $("#kAprov").textContent = fmt(orcs.filter(d => d.status === "aprovado" && (d.aprovadoEm || d.data).startsWith(mes)).reduce((s,d) => s+totais(d).total, 0));
+  $("#kRec").textContent = fmt(db.docs.filter(d => d.tipo === "rec" && d.data.startsWith(mes)).reduce((s,d) => s+totais(d).total, 0));
+  const decid = orcs.filter(d => d.status !== "aberto"); $("#kTaxa").textContent = decid.length ? Math.round(100*decid.filter(d => d.status === "aprovado").length/decid.length)+"%" : "–";
+  const q = $("#busca").value.trim().toLowerCase(), f = $("#filtro").value;
+  const lista = db.docs.filter(d => (f === "todos" || (f === "rec" ? d.tipo === "rec" : d.tipo === "orc" && d.status === f)) && (!q || d.cliente.toLowerCase().includes(q) || codigo(d).toLowerCase().includes(q)))
+    .sort((a,b) => (b.criado||0) - (a.criado||0));
+  const el = $("#lista");
+  if(!db.docs.length){ el.innerHTML = '<div class="empty"><b>Nenhum documento salvo ainda</b><span>Crie o primeiro orçamento na aba Criar, ou veja um exemplo pronto.</span><button class="btn ghost" type="button" id="eEx">Ver com dados de exemplo</button></div>'; $("#eEx").onclick = exemplo; return; }
+  el.innerHTML = lista.length ? lista.map(d => '<div class="row" data-id="'+d.id+'" role="button" tabindex="0"><div><div class="n">'+codigo(d)+' · '+esc(d.cliente)+'</div><div class="s">'+statusPill(d)+' · '+br(d.data)+'</div></div><div class="bar" style="justify-content:flex-end">'+
+    (d.tipo === "orc" && d.status === "aberto" ? '<button class="btn sm" type="button" data-ap="'+d.id+'">Aprovado</button><button class="btn danger sm" type="button" data-rc="'+d.id+'">Recusado</button>' : '')+
+    (d.tipo === "orc" && d.status === "aprovado" ? '<button class="btn ghost sm" type="button" data-rcb="'+d.id+'">Gerar recibo</button>' : '')+
+    '<span class="v">'+fmt(totais(d).total)+'</span></div></div>').join("") : '<div class="empty">Nada encontrado neste filtro.</div>';
+  el.querySelectorAll(".row").forEach(r => { const abrir = e => { if(e.target.closest("button")) return; abrirDoc(r.dataset.id); }; r.onclick = abrir; r.onkeydown = e => { if(e.key === "Enter") abrir(e); }; });
+  el.querySelectorAll("[data-ap]").forEach(b => b.onclick = () => mudarStatus(b.dataset.ap, "aprovado"));
+  el.querySelectorAll("[data-rc]").forEach(b => b.onclick = () => mudarStatus(b.dataset.rc, "recusado"));
+  el.querySelectorAll("[data-rcb]").forEach(b => b.onclick = () => gerarRecibo(b.dataset.rcb));
+}
+function mudarStatus(id, st){ const d = db.docs.find(x => x.id === id); d.status = st; if(st === "aprovado") d.aprovadoEm = hoje(); salvarDb(); renderHist(); toast(codigo(d)+(st === "aprovado" ? " aprovado." : " recusado.")); }
+function abrirDoc(id){ atual = structuredClone(db.docs.find(x => x.id === id)); paraForm(); mostrar("pEditor"); window.scrollTo({top:0,behavior:"smooth"}); }
+function gerarRecibo(id){ const o = db.docs.find(x => x.id === id);
+  atual = Object.assign(structuredClone(o), {id:null, numero:null, tipo:"rec", status:"pago", data:hoje(), origem:o.id, obs:(o.obs ? o.obs+"\n" : "")+"Referente ao orçamento "+codigo(o)+"."});
+  paraForm(); mostrar("pEditor"); toast("Recibo criado a partir do "+codigo(o)+". Confira e salve."); }
+
+function exemplo(){
+  const mk = (tipo, numero, cliente, tel, itens, extra) => ({id:uid(), tipo, numero, status: tipo === "orc" ? "aberto" : "pago", cliente, tel, cdoc:"", end:"", itens, desc:"", data:hoje(), valid:15, pag:"Pix", prazo:"", obs:"", origem:null, criado:Date.now()+numero, ...extra});
+  const base = db.config.num;
+  db.docs.push(
+    mk("orc", base, "Maria Oliveira (exemplo)", "(11) 91234-5678", [{d:"Instalação de chuveiro elétrico",q:"1",v:"120,00"},{d:"Troca de tomadas",q:"4",v:"25,00"}], {prazo:"2 dias úteis"}),
+    mk("orc", base+1, "Padaria Pão Quente (exemplo)", "", [{d:"Revisão do quadro de energia",q:"1",v:"350,00"}], {status:"aprovado", aprovadoEm:hoje()}),
+    mk("rec", base+2, "Carlos Mendes (exemplo)", "", [{d:"Instalação de ventilador de teto",q:"2",v:"90,00"}], {})
+  );
+  db.config.num = base + 3; salvarDb(); renderHist(); toast("Exemplos carregados. Apague em Meu negócio e backup quando quiser.");
+}
+
+/* Configurações */
+function paraConfig(){ const c = db.config; $("#cNome").value = c.nome; $("#cDoc").value = c.doc; $("#cTel").value = c.tel; $("#cEmail").value = c.email; $("#cEnd").value = c.end; $("#cPix").value = c.pix; $("#cCor").value = c.cor || "#24316b"; $("#cNum").value = c.num; $("#cObs").value = c.obs;
+  mostrarLogo(); }
+$("#fConfig").addEventListener("submit", e => { e.preventDefault(); Object.assign(db.config, {nome:$("#cNome").value.trim(), doc:$("#cDoc").value.trim(), tel:$("#cTel").value.trim(), email:$("#cEmail").value.trim(), end:$("#cEnd").value.trim(), pix:$("#cPix").value.trim(), cor:$("#cCor").value, num:Math.max(1, parseInt($("#cNum").value)||1), obs:$("#cObs").value.trim()});
+  if(salvarDb()){ $("#titulo").textContent = db.config.nome || "Orçamento Fácil"; atualizar(); toast("Dados do negócio salvos."); } });
+$("#cLogo").onchange = e => { const f = e.target.files[0]; if(!f) return; const img = new Image(); const url = URL.createObjectURL(f);
+  img.onload = () => { const s = Math.min(1, 320/Math.max(img.width, img.height)); const cv = document.createElement("canvas"); cv.width = Math.round(img.width*s); cv.height = Math.round(img.height*s);
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height); db.config.logo = cv.toDataURL("image/png"); URL.revokeObjectURL(url); if(salvarDb()){ mostrarLogo(); atualizar(); toast("Logo atualizada."); } };
+  img.onerror = () => toast("Não foi possível abrir esta imagem."); img.src = url; e.target.value = ""; };
+$("#cLogoX").onclick = () => { db.config.logo = ""; salvarDb(); mostrarLogo(); atualizar(); };
+function mostrarLogo(){ const l = db.config.logo; $("#logoPrev").hidden = !l; $("#cLogoX").hidden = !l; if(l) $("#logoPrev").src = l; }
+function baixar(nome, conteudo, tipo){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([conteudo], {type:tipo})); a.download = nome; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+$("#btnBackup").onclick = () => { baixar("orcamento-facil-backup-"+hoje()+".json", JSON.stringify(db), "application/json"); toast("Backup baixado. Guarde o arquivo em local seguro."); };
+$("#fRestaurar").onchange = e => { const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+  r.onload = () => { try{ const d = JSON.parse(r.result); if(!Array.isArray(d.docs)) throw 0; if(confirm("Restaurar este backup? Os dados atuais deste aparelho serão substituídos.")){ db = {config:Object.assign(vazio().config, d.config), docs:d.docs}; salvarDb(); paraConfig(); atual = novoDoc("orc"); paraForm(); renderHist(); toast("Backup restaurado."); } }
+    catch(_){ toast("Arquivo inválido. Escolha um backup do Orçamento Fácil (.json)."); } e.target.value = ""; }; r.readAsText(f); };
+$("#btnZerar").onclick = () => { if(confirm("Apagar TODOS os documentos e dados do negócio deste aparelho? Faça um backup antes.") && confirm("Tem certeza? Esta ação não pode ser desfeita.")){ db = vazio(); salvarDb(); paraConfig(); atual = novoDoc("orc"); paraForm(); renderHist(); toast("Dados apagados."); } };
+
+/* Eventos */
+function mostrar(p){ document.querySelectorAll(".tab").forEach(x => { const on = x.dataset.p === p; x.setAttribute("aria-selected", on); $("#"+x.dataset.p).hidden = !on; }); if(p === "pConfig") paraConfig(); if(p === "pHist") renderHist(); }
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => mostrar(t.dataset.p));
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { doForm(); if(atual.tipo === b.dataset.tipo) return; if(atual.id){ toast("Para mudar o tipo de um documento salvo, crie um novo."); return; } atual.tipo = b.dataset.tipo; atual.status = atual.tipo === "orc" ? "aberto" : "pago"; paraForm(); });
+$("#fDoc").addEventListener("input", atualizar);
+$("#addItem").onclick = () => { doForm(); atual.itens.push({d:"",q:"1",v:""}); renderItens(); atualizar(); const ds = document.querySelectorAll(".i-d"); ds[ds.length-1].focus(); };
+$("#btnSalvar").onclick = () => salvarAtual();
+$("#btnPdf").onclick = () => { if(salvarAtual(true)){ const t = document.title; document.title = codigo(atual)+" "+atual.cliente; window.print(); document.title = t; } };
+$("#btnWa").onclick = enviarWa;
+$("#btnNovo").onclick = () => { atual = novoDoc("orc"); paraForm(); mostrar("pEditor"); };
+$("#busca").oninput = renderHist; $("#filtro").onchange = renderHist;
+$("#titulo").textContent = db.config.nome || "Orçamento Fácil";
+paraForm(); renderHist();
+</script>
+</body>
+</html>
