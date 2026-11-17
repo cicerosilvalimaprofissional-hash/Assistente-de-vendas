@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0e5a4a">
+<title>Caderneta do Fiado · PrestaVip</title>
+<style>
+:root{--bg:#f2f5f3;--card:#fff;--fg:#14231e;--muted:#5b6d66;--line:#d9e3de;--brand:#0e5a4a;--brand-2:#13836b;--brand-fg:#fff;
+--ok:#1d7a46;--ok-bg:#e3f4ea;--warn:#9a6400;--warn-bg:#fff2d6;--bad:#b42318;--bad-bg:#fde7e4;--accent:#f5c518}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1714;--card:#14221e;--fg:#e6efeb;--muted:#9bb0a8;--line:#253a33;--brand:#2fb592;--brand-2:#3fd0a9;--brand-fg:#05211a;
+--ok:#5bd08f;--ok-bg:#12321f;--warn:#f0bb4b;--warn-bg:#3a2c0b;--bad:#ff8a7a;--bad-bg:#3d1712;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--brand);color:var(--brand-fg);padding:14px max(16px,env(safe-area-inset-left)) 14px}
+.top{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font-size:19px;letter-spacing:-.2px}
+.top small{display:block;opacity:.85;font-size:12.5px}
+main{max-width:980px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left)) 60px;display:grid;gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi span{display:block;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em}
+.kpi b{font-size:22px;font-variant-numeric:tabular-nums}
+.kpi.bad b{color:var(--bad)} .kpi.ok b{color:var(--ok)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:600}
+.tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.panel{display:grid;gap:12px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar input[type=search]{flex:1 1 220px}
+input,select,textarea{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand-2);outline-offset:1px}
+label{display:grid;gap:4px;font-size:13.5px;color:var(--muted);font-weight:600}
+.btn{border:1px solid var(--brand);background:var(--brand);color:var(--brand-fg);border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--brand)}
+.btn.wa{background:#1f9e55;border-color:#1f9e55;color:#fff}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:6px 10px;font-size:13.5px}
+.list{display:grid;gap:8px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;cursor:pointer;text-align:left;width:100%}
+.row:hover{border-color:var(--brand-2)}
+.row .n{font-weight:700}
+.row .s{color:var(--muted);font-size:13px}
+.row .v{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.zero{background:var(--line);color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.r,th.r{text-align:right}
+.mais{color:var(--bad)} .menos{color:var(--ok)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);display:grid;gap:10px;justify-items:center}
+.hint{color:var(--muted);font-size:13px;margin:0}
+dialog{border:none;border-radius:14px;padding:0;width:min(520px,calc(100vw - 24px));background:var(--card);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(5,20,15,.55)}
+dialog form{padding:18px;display:grid;gap:12px}
+dialog h2{margin:0;font-size:18px}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50}
+.scroll{overflow-x:auto}
+footer{color:var(--muted);font-size:12.5px;text-align:center;padding:10px}
+@media print{header .bar,.tabs,.kpis,.no-print,footer,.toast{display:none!important}body{background:#fff;color:#000}.card{border:none;padding:0}main{padding:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div><h1 id="titulo">Caderneta do Fiado</h1><small id="subtitulo">Controle de vendas fiado · PrestaVip</small></div>
+    <div class="bar"><button class="btn ghost sm" style="color:var(--brand-fg);border-color:rgba(255,255,255,.55)" id="btnNovoCliente" type="button">+ Novo cliente</button></div>
+  </div>
+</header>
+<main>
+  <section class="kpis" aria-label="Resumo">
+    <div class="kpi"><span>Total a receber</span><b id="kReceber">R$ 0,00</b></div>
+    <div class="kpi bad"><span>Em atraso</span><b id="kAtraso">R$ 0,00</b></div>
+    <div class="kpi ok"><span>Recebido no mês</span><b id="kMes">R$ 0,00</b></div>
+    <div class="kpi"><span>Clientes devendo</span><b id="kClientes">0</b></div>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="pClientes" type="button">Clientes</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="pMov" type="button">Movimentos</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="pConfig" type="button">Configurações e backup</button>
+  </div>
+
+  <section class="panel" id="pClientes">
+    <div class="bar">
+      <input type="search" id="busca" placeholder="Buscar cliente pelo nome ou telefone" aria-label="Buscar cliente">
+      <select id="filtro" aria-label="Filtrar" style="width:auto">
+        <option value="devendo">Devendo</option><option value="atraso">Em atraso</option><option value="todos">Todos</option>
+      </select>
+    </div>
+    <div class="list" id="lista"></div>
+    <section class="card" id="detalhe" hidden></section>
+  </section>
+
+  <section class="panel" id="pMov" hidden>
+    <div class="bar">
+      <label style="flex:1 1 160px">Mês<input type="month" id="mesMov"></label>
+    </div>
+    <div class="card scroll"><table><thead><tr><th>Data</th><th>Cliente</th><th>Descrição</th><th class="r">Valor</th></tr></thead><tbody id="tbMov"></tbody></table></div>
+    <p class="hint" id="resumoMov"></p>
+  </section>
+
+  <section class="panel" id="pConfig" hidden>
+    <form class="card" id="fConfig">
+      <h2 style="margin:0;font-size:17px">Dados do seu negócio</h2>
+      <div class="grid2">
+        <label>Nome do negócio<input id="cNome" maxlength="60" placeholder="Ex.: Mercadinho da Ana"></label>
+        <label>Chave Pix (aparece na cobrança)<input id="cPix" maxlength="80" placeholder="CPF, celular, e-mail ou chave aleatória"></label>
+        <label>Prazo padrão para pagar (dias)<input id="cPrazo" type="number" min="1" max="120" value="30"></label>
+        <label>Limite padrão por cliente (R$, opcional)<input id="cLimite" inputmode="decimal" placeholder="Ex.: 300,00"></label>
+      </div>
+      <label>Mensagem de cobrança no WhatsApp
+        <textarea id="cMsg" rows="5"></textarea>
+      </label>
+      <p class="hint">Use {nome}, {saldo}, {negocio}, {pix} e {vencido}. Eles são trocados pelos dados de cada cliente.</p>
+      <div class="acts"><button class="btn" type="submit">Salvar configurações</button></div>
+    </form>
+    <div class="card">
+      <h2 style="margin:0;font-size:17px">Backup</h2>
+      <p class="hint">Os dados ficam salvos só neste navegador, neste aparelho. Faça backup toda semana e guarde o arquivo no Google Drive, no e-mail ou no WhatsApp. Para usar em outro aparelho, abra o app lá e use "Restaurar backup".</p>
+      <div class="bar">
+        <button class="btn" id="btnBackup" type="button">Baixar backup</button>
+        <label class="btn ghost" style="display:inline-block;cursor:pointer">Restaurar backup<input type="file" id="fRestaurar" accept=".json,application/json" hidden></label>
+        <button class="btn ghost" id="btnCsv" type="button">Exportar planilha (CSV)</button>
+        <button class="btn danger" id="btnZerar" type="button">Apagar tudo</button>
+      </div>
+      <p class="hint" id="ultimoBackup"></p>
+    </div>
+  </section>
+  <footer>Caderneta do Fiado · PrestaVip · Funciona sem internet. Seus dados não saem do seu aparelho.</footer>
+</main>
+
+<dialog id="dCliente"><form method="dialog" id="fCliente">
+  <h2 id="dClienteT">Novo cliente</h2>
+  <label>Nome<input id="clNome" required maxlength="60"></label>
+  <div class="grid2">
+    <label>WhatsApp (com DDD)<input id="clTel" inputmode="tel" placeholder="(11) 91234-5678"></label>
+    <label>Limite de crédito (R$)<input id="clLimite" inputmode="decimal" placeholder="Sem limite"></label>
+  </div>
+  <label>Observação<input id="clObs" maxlength="120" placeholder="Ex.: paga todo dia 10"></label>
+  <div class="acts"><button class="btn ghost" value="cancel" formnovalidate type="submit">Cancelar</button><button class="btn" value="ok" type="submit">Salvar</button></div>
+</form></dialog>
+
+<dialog id="dMov"><form method="dialog" id="fMov">
+  <h2 id="dMovT">Nova compra</h2>
+  <p class="hint" id="dMovInfo"></p>
+  <div class="grid2">
+    <label>Valor (R$)<input id="mvValor" required inputmode="decimal" placeholder="0,00"></label>
+    <label>Data<input id="mvData" type="date" required></label>
+  </div>
+  <label id="lbDesc">Descrição<input id="mvDesc" maxlength="80" placeholder="Ex.: pão, leite e café"></label>
+  <label id="lbVenc">Vence em<input id="mvVenc" type="date"></label>
+  <label id="lbForma" hidden>Forma de pagamento<select id="mvForma"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Outro</option></select></label>
+  <p class="hint" id="mvAviso"></p>
+  <div class="acts"><button class="btn ghost" value="cancel" formnovalidate type="submit">Cancelar</button><button class="btn" value="ok" type="submit">Salvar</button></div>
+</form></dialog>
+
+<script>
+"use strict";
+const KEY = "prestavip.caderneta.v1";
+const MSG_PADRAO = "Olá, {nome}! Tudo bem? Aqui é da {negocio}. Passando para lembrar que o seu saldo em aberto é de {saldo}{vencido}. Se puder, pague pelo Pix: {pix}. Qualquer dúvida, é só me chamar. Obrigado!";
+const $ = s => document.querySelector(s);
+const hoje = () => isoDate(new Date());
+function isoDate(d){ const z = n => String(n).padStart(2,"0"); return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate()); }
+function addDias(iso, n){ const d = new Date(iso+"T12:00:00"); d.setDate(d.getDate()+Number(n)); return isoDate(d); }
+function diasEntre(a, b){ return Math.round((new Date(b+"T12:00:00") - new Date(a+"T12:00:00")) / 864e5); }
+function br(iso){ if(!iso) return ""; const [y,m,d] = iso.split("-"); return d+"/"+m+"/"+y; }
+function centavos(txt){ if(txt == null) return NaN; let s = String(txt).trim().replace(/[R$\s]/g,""); if(!s) return NaN;
+  if(s.includes(",")) s = s.replace(/\./g,"").replace(",","."); const v = Math.round(parseFloat(s)*100); return isFinite(v) ? v : NaN; }
+const fmt = c => (c<0?"- ":"")+"R$ "+(Math.abs(c)/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function toast(t){ const el = document.createElement("div"); el.className="toast"; el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(),2600); }
+
+let db = carregar();
+function vazio(){ return {config:{nome:"",pix:"",prazo:30,limite:null,msg:MSG_PADRAO}, clientes:[], movs:[], ultimoBackup:null}; }
+function carregar(){ try{ const d = JSON.parse(localStorage.getItem(KEY)); if(d && Array.isArray(d.clientes)) return Object.assign(vazio(), d); }catch(e){} return vazio(); }
+function salvar(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){ toast("Não foi possível salvar neste navegador."); } }
+
+/* Saldo e atraso: pagamentos abatem as compras mais antigas primeiro. */
+function situacao(clienteId){
+  const movs = db.movs.filter(m => m.cliente === clienteId).sort((a,b) => (a.data+a.criado).localeCompare(b.data+b.criado));
+  let pago = movs.filter(m => m.tipo === "pag").reduce((s,m) => s+m.valor, 0);
+  const comprado = movs.filter(m => m.tipo === "compra").reduce((s,m) => s+m.valor, 0);
+  const abertas = [];
+  for(const m of movs.filter(m => m.tipo === "compra")){
+    const usado = Math.min(pago, m.valor); pago -= usado;
+    if(m.valor - usado > 0) abertas.push({...m, resta: m.valor - usado});
+  }
+  const saldo = comprado - movs.filter(m => m.tipo === "pag").reduce((s,m) => s+m.valor, 0);
+  const vencidas = abertas.filter(m => (m.venc || m.data) < hoje());
+  const vencido = vencidas.reduce((s,m) => s+m.resta, 0);
+  const maisAntiga = vencidas.length ? vencidas.reduce((a,b) => (a.venc < b.venc ? a : b)) : null;
+  const diasAtraso = maisAntiga ? diasEntre(maisAntiga.venc || maisAntiga.data, hoje()) : 0;
+  const proxVenc = abertas.filter(m => (m.venc || m.data) >= hoje()).map(m => m.venc).sort()[0] || null;
+  return {saldo, vencido, diasAtraso, abertas, proxVenc, movs};
+}
+function pill(s){
+  if(s.saldo <= 0) return '<span class="pill zero">'+(s.saldo < 0 ? "Crédito" : "Quitado")+'</span>';
+  if(s.vencido > 0) return '<span class="pill bad">Atrasado '+s.diasAtraso+' dia'+(s.diasAtraso===1?"":"s")+'</span>';
+  if(s.proxVenc && diasEntre(hoje(), s.proxVenc) <= 3) return '<span class="pill warn">Vence '+(s.proxVenc===hoje()?"hoje":"em "+br(s.proxVenc).slice(0,5))+'</span>';
+  return '<span class="pill ok">Em dia</span>';
+}
+
+let selecionado = null;
+function render(){
+  const c = db.config;
+  $("#titulo").textContent = c.nome ? c.nome : "Caderneta do Fiado";
+  $("#subtitulo").textContent = c.nome ? "Caderneta do Fiado · PrestaVip" : "Controle de vendas fiado · PrestaVip";
+  const sits = new Map(db.clientes.map(cl => [cl.id, situacao(cl.id)]));
+  let receber = 0, atraso = 0, devendo = 0;
+  sits.forEach(s => { if(s.saldo > 0){ receber += s.saldo; devendo++; } atraso += s.vencido; });
+  const mes = hoje().slice(0,7);
+  const recebidoMes = db.movs.filter(m => m.tipo === "pag" && m.data.startsWith(mes)).reduce((s,m) => s+m.valor, 0);
+  $("#kReceber").textContent = fmt(receber); $("#kAtraso").textContent = fmt(atraso);
+  $("#kMes").textContent = fmt(recebidoMes); $("#kClientes").textContent = devendo;
+
+  const q = $("#busca").value.trim().toLowerCase(), f = $("#filtro").value;
+  const lista = db.clientes.filter(cl => {
+    const s = sits.get(cl.id);
+    if(f === "devendo" && s.saldo <= 0) return false;
+    if(f === "atraso" && s.vencido <= 0) return false;
+    return !q || cl.nome.toLowerCase().includes(q) || (cl.tel||"").replace(/\D/g,"").includes(q.replace(/\D/g,"") || "§");
+  }).sort((a,b) => sits.get(b.id).vencido - sits.get(a.id).vencido || sits.get(b.id).saldo - sits.get(a.id).saldo || a.nome.localeCompare(b.nome));
+
+  const el = $("#lista");
+  if(!db.clientes.length){
+    el.innerHTML = '<div class="empty"><b>Nenhum cliente ainda</b><span>Cadastre o primeiro cliente para começar a anotar as compras fiado.</span><div class="bar" style="justify-content:center"><button class="btn" type="button" id="eNovo">+ Cadastrar cliente</button><button class="btn ghost" type="button" id="eExemplo">Ver com dados de exemplo</button></div></div>';
+    $("#eNovo").onclick = () => abrirCliente(); $("#eExemplo").onclick = exemplo;
+  } else if(!lista.length){
+    el.innerHTML = '<div class="empty">Nenhum cliente neste filtro. <button class="btn ghost sm" type="button" id="eTodos">Mostrar todos</button></div>';
+    $("#eTodos").onclick = () => { $("#filtro").value = "todos"; $("#busca").value = ""; render(); };
+  } else {
+    el.innerHTML = lista.map(cl => { const s = sits.get(cl.id); const lim = limiteDe(cl);
+      return '<button class="row" type="button" data-id="'+cl.id+'"><div><div class="n">'+esc(cl.nome)+'</div><div class="s">'+pill(s)+(lim && s.saldo > lim ? ' <span class="pill warn">Acima do limite</span>' : '')+(cl.tel ? ' · '+esc(cl.tel) : '')+'</div></div><div class="v">'+fmt(s.saldo)+'</div></button>'; }).join("");
+    el.querySelectorAll(".row").forEach(b => b.onclick = () => { selecionado = b.dataset.id; renderDetalhe(); $("#detalhe").scrollIntoView({behavior:"smooth",block:"start"}); });
+  }
+  renderDetalhe(); renderMov();
+}
+function limiteDe(cl){ return cl.limite != null ? cl.limite : db.config.limite; }
+
+function renderDetalhe(){
+  const box = $("#detalhe"); const cl = db.clientes.find(c => c.id === selecionado);
+  if(!cl){ box.hidden = true; return; }
+  const s = situacao(cl.id); box.hidden = false; const lim = limiteDe(cl);
+  const linhas = [...s.movs].reverse().map(m => '<tr><td>'+br(m.data)+'</td><td>'+(m.tipo==="compra" ? esc(m.desc||"Compra")+(m.venc ? '<br><span class="hint">vence '+br(m.venc)+'</span>' : '') : 'Pagamento'+(m.forma ? ' ('+esc(m.forma)+')' : ''))+'</td><td class="r '+(m.tipo==="compra"?"mais":"menos")+'">'+(m.tipo==="compra"?"+ ":"− ")+fmt(m.valor).replace("R$ ","")+'</td><td class="r no-print"><button class="btn danger sm" type="button" data-del="'+m.id+'" aria-label="Excluir lançamento">×</button></td></tr>').join("");
+  box.innerHTML =
+    '<div class="bar" style="justify-content:space-between"><div><h2 style="margin:0;font-size:19px">'+esc(cl.nome)+'</h2><div class="hint">'+(cl.tel ? esc(cl.tel)+' · ' : '')+(lim ? 'Limite '+fmt(lim) : 'Sem limite')+(cl.obs ? ' · '+esc(cl.obs) : '')+'</div></div>'+
+    '<div style="text-align:right"><div class="hint">Saldo devedor</div><div style="font-size:24px;font-weight:800;font-variant-numeric:tabular-nums">'+fmt(s.saldo)+'</div><div>'+pill(s)+'</div></div></div>'+
+    '<div class="bar no-print"><button class="btn" type="button" id="dCompra">+ Compra</button><button class="btn ghost" type="button" id="dPag">Receber pagamento</button>'+
+    '<button class="btn wa" type="button" id="dCobrar"'+(s.saldo>0?'':' disabled')+'>Cobrar no WhatsApp</button>'+
+    '<button class="btn ghost sm" type="button" id="dImprimir">Imprimir extrato</button><button class="btn ghost sm" type="button" id="dEditar">Editar</button><button class="btn danger sm" type="button" id="dExcluir">Excluir cliente</button></div>'+
+    (s.movs.length ? '<div class="scroll"><table><thead><tr><th>Data</th><th>Lançamento</th><th class="r">Valor (R$)</th><th class="no-print"></th></tr></thead><tbody>'+linhas+'</tbody></table></div>' : '<p class="hint">Nenhum lançamento ainda. Toque em "+ Compra" para anotar a primeira compra fiado.</p>');
+  $("#dCompra").onclick = () => abrirMov("compra", cl);
+  $("#dPag").onclick = () => abrirMov("pag", cl);
+  $("#dCobrar").onclick = () => cobrar(cl, s);
+  $("#dImprimir").onclick = () => window.print();
+  $("#dEditar").onclick = () => abrirCliente(cl);
+  $("#dExcluir").onclick = () => { if(confirm("Excluir "+cl.nome+" e todos os lançamentos dele? Isso não pode ser desfeito.")){ db.movs = db.movs.filter(m => m.cliente !== cl.id); db.clientes = db.clientes.filter(c => c.id !== cl.id); selecionado = null; salvar(); render(); toast("Cliente excluído."); } };
+  box.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { const m = db.movs.find(x => x.id === b.dataset.del); if(m && confirm("Excluir este lançamento de "+fmt(m.valor)+"?")){ db.movs = db.movs.filter(x => x.id !== m.id); salvar(); render(); toast("Lançamento excluído."); } });
+}
+
+function telWa(tel){ let d = String(tel||"").replace(/\D/g,""); if(!d) return ""; if(d.length <= 11) d = "55"+d.replace(/^0+/,""); return d; }
+function cobrar(cl, s){
+  const c = db.config;
+  const vencTxt = s.vencido > 0 ? " (sendo "+fmt(s.vencido)+" já vencido)" : "";
+  const msg = (c.msg || MSG_PADRAO).replaceAll("{nome}", cl.nome.split(" ")[0]).replaceAll("{saldo}", fmt(s.saldo))
+    .replaceAll("{negocio}", c.nome || "loja").replaceAll("{pix}", c.pix || "(combine comigo)").replaceAll("{vencido}", vencTxt);
+  const n = telWa(cl.tel);
+  window.open((n ? "https://wa.me/"+n : "https://wa.me/")+"?text="+encodeURIComponent(msg), "_blank", "noopener");
+}
+
+let editCliente = null;
+function abrirCliente(cl){
+  editCliente = cl || null;
+  $("#dClienteT").textContent = cl ? "Editar cliente" : "Novo cliente";
+  $("#clNome").value = cl?.nome || ""; $("#clTel").value = cl?.tel || ""; $("#clObs").value = cl?.obs || "";
+  $("#clLimite").value = cl?.limite != null ? (cl.limite/100).toFixed(2).replace(".",",") : "";
+  $("#dCliente").showModal(); $("#clNome").focus();
+}
+$("#fCliente").addEventListener("submit", e => {
+  if(e.submitter?.value !== "ok") return;
+  const nome = $("#clNome").value.trim(); if(!nome){ e.preventDefault(); return; }
+  const limTxt = $("#clLimite").value.trim(); const lim = limTxt ? centavos(limTxt) : null;
+  if(limTxt && !(lim > 0)){ e.preventDefault(); toast("Limite inválido. Use um valor como 300,00."); return; }
+  const dados = {nome, tel: $("#clTel").value.trim(), obs: $("#clObs").value.trim(), limite: lim};
+  if(editCliente) Object.assign(editCliente, dados); else { const novo = {id: uid(), criado: Date.now(), ...dados}; db.clientes.push(novo); selecionado = novo.id; }
+  salvar(); render(); toast(editCliente ? "Cliente atualizado." : "Cliente cadastrado.");
+});
+
+let movCtx = null;
+function abrirMov(tipo, cl){
+  movCtx = {tipo, cl}; const s = situacao(cl.id); const compra = tipo === "compra";
+  $("#dMovT").textContent = compra ? "Nova compra fiado" : "Receber pagamento";
+  $("#dMovInfo").textContent = cl.nome+" · saldo atual "+fmt(s.saldo);
+  $("#mvValor").value = compra ? "" : (s.saldo > 0 ? (s.saldo/100).toFixed(2).replace(".",",") : "");
+  $("#mvData").value = hoje(); $("#mvDesc").value = ""; $("#mvVenc").value = addDias(hoje(), db.config.prazo || 30);
+  $("#lbDesc").hidden = !compra; $("#lbVenc").hidden = !compra; $("#lbForma").hidden = compra; $("#mvAviso").textContent = "";
+  $("#dMov").showModal(); $("#mvValor").focus(); $("#mvValor").select();
+}
+$("#mvData").addEventListener("change", () => { if(movCtx?.tipo === "compra") $("#mvVenc").value = addDias($("#mvData").value || hoje(), db.config.prazo || 30); });
+$("#mvValor").addEventListener("input", () => {
+  if(movCtx?.tipo !== "compra") return; const v = centavos($("#mvValor").value); const lim = limiteDe(movCtx.cl); const s = situacao(movCtx.cl.id);
+  $("#mvAviso").textContent = (lim && v > 0 && s.saldo + v > lim) ? "Atenção: com esta compra o saldo ("+fmt(s.saldo+v)+") passa do limite de "+fmt(lim)+"." : "";
+});
+$("#fMov").addEventListener("submit", e => {
+  if(e.submitter?.value !== "ok") return;
+  const v = centavos($("#mvValor").value);
+  if(!(v > 0)){ e.preventDefault(); toast("Digite um valor maior que zero, por exemplo 25,90."); return; }
+  const m = {id: uid(), criado: Date.now(), cliente: movCtx.cl.id, tipo: movCtx.tipo, valor: v, data: $("#mvData").value || hoje()};
+  if(m.tipo === "compra"){ m.desc = $("#mvDesc").value.trim(); m.venc = $("#mvVenc").value || addDias(m.data, db.config.prazo || 30); }
+  else m.forma = $("#mvForma").value;
+  db.movs.push(m); selecionado = movCtx.cl.id; salvar(); render();
+  toast(m.tipo === "compra" ? "Compra anotada." : "Pagamento registrado.");
+});
+
+function renderMov(){
+  if(!$("#mesMov").value) $("#mesMov").value = hoje().slice(0,7);
+  const mes = $("#mesMov").value; const nomes = new Map(db.clientes.map(c => [c.id, c.nome]));
+  const ms = db.movs.filter(m => m.data.startsWith(mes)).sort((a,b) => (b.data+b.criado).localeCompare(a.data+a.criado));
+  $("#tbMov").innerHTML = ms.length ? ms.map(m => '<tr><td>'+br(m.data)+'</td><td>'+esc(nomes.get(m.cliente)||"?")+'</td><td>'+(m.tipo==="compra" ? esc(m.desc||"Compra") : "Pagamento"+(m.forma?" ("+esc(m.forma)+")":""))+'</td><td class="r '+(m.tipo==="compra"?"mais":"menos")+'">'+(m.tipo==="compra"?"+ ":"− ")+fmt(m.valor).replace("R$ ","")+'</td></tr>').join("")
+    : '<tr><td colspan="4" class="hint">Nenhum movimento neste mês.</td></tr>';
+  const vend = ms.filter(m => m.tipo==="compra").reduce((s,m) => s+m.valor, 0), rec = ms.filter(m => m.tipo==="pag").reduce((s,m) => s+m.valor, 0);
+  $("#resumoMov").textContent = "No mês: "+fmt(vend)+" vendidos fiado e "+fmt(rec)+" recebidos.";
+}
+
+function preencherConfig(){ const c = db.config; $("#cNome").value = c.nome||""; $("#cPix").value = c.pix||""; $("#cPrazo").value = c.prazo||30;
+  $("#cLimite").value = c.limite ? (c.limite/100).toFixed(2).replace(".",",") : ""; $("#cMsg").value = c.msg || MSG_PADRAO;
+  $("#ultimoBackup").textContent = db.ultimoBackup ? "Último backup: "+br(db.ultimoBackup.slice(0,10)) : "Você ainda não fez nenhum backup."; }
+$("#fConfig").addEventListener("submit", e => { e.preventDefault(); const lim = $("#cLimite").value.trim() ? centavos($("#cLimite").value) : null;
+  db.config = {nome: $("#cNome").value.trim(), pix: $("#cPix").value.trim(), prazo: Math.max(1, Math.min(120, parseInt($("#cPrazo").value)||30)), limite: lim > 0 ? lim : null, msg: $("#cMsg").value.trim() || MSG_PADRAO};
+  salvar(); render(); toast("Configurações salvas."); });
+
+function baixar(nome, conteudo, tipo){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([conteudo], {type: tipo})); a.download = nome; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+$("#btnBackup").onclick = () => { db.ultimoBackup = new Date().toISOString(); salvar(); baixar("caderneta-backup-"+hoje()+".json", JSON.stringify(db, null, 1), "application/json"); preencherConfig(); toast("Backup baixado. Guarde o arquivo em local seguro."); };
+$("#fRestaurar").onchange = e => { const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+  r.onload = () => { try{ const d = JSON.parse(r.result); if(!Array.isArray(d.clientes) || !Array.isArray(d.movs)) throw 0;
+    if(confirm("Restaurar este backup? Os dados atuais deste aparelho serão substituídos.")){ db = Object.assign(vazio(), d); salvar(); selecionado = null; preencherConfig(); render(); toast("Backup restaurado."); } }
+    catch(_){ toast("Arquivo inválido. Escolha um backup da Caderneta do Fiado (.json)."); } e.target.value = ""; };
+  r.readAsText(f); };
+$("#btnCsv").onclick = () => { const nomes = new Map(db.clientes.map(c => [c.id, c.nome])); const q = s => '"'+String(s??"").replace(/"/g,'""')+'"';
+  const linhas = [["Data","Cliente","Tipo","Descrição","Vencimento","Valor"].join(";")].concat(db.movs.slice().sort((a,b) => a.data.localeCompare(b.data)).map(m => [br(m.data), q(nomes.get(m.cliente)), m.tipo==="compra"?"Compra":"Pagamento", q(m.desc||m.forma||""), br(m.venc||""), (m.tipo==="compra"?"":"-")+(m.valor/100).toFixed(2).replace(".",",")].join(";")));
+  baixar("caderneta-movimentos-"+hoje()+".csv", "﻿"+linhas.join("\r\n"), "text/csv"); };
+$("#btnZerar").onclick = () => { if(confirm("Apagar TODOS os clientes e lançamentos deste aparelho? Faça um backup antes.") && confirm("Tem certeza? Esta ação não pode ser desfeita.")){ db = vazio(); salvar(); selecionado = null; preencherConfig(); render(); toast("Dados apagados."); } };
+
+function exemplo(){
+  const d = n => addDias(hoje(), n); const id = () => uid();
+  const ana = {id:id(),criado:1,nome:"Ana Souza",tel:"(11) 91234-5678",obs:"Paga todo dia 10",limite:null};
+  const jose = {id:id(),criado:2,nome:"José Pereira",tel:"(11) 99876-5432",obs:"",limite:20000};
+  const rita = {id:id(),criado:3,nome:"Rita Lima",tel:"",obs:"Vizinha da padaria",limite:null};
+  db.clientes.push(ana, jose, rita);
+  const mv = (cl,tipo,valor,data,extra) => db.movs.push({id:id(),criado:Date.now()+db.movs.length,cliente:cl.id,tipo,valor,data,...extra});
+  mv(ana,"compra",4590,d(-40),{desc:"Compras do mês (exemplo)",venc:d(-10)}); mv(ana,"pag",2000,d(-5),{forma:"Pix"}); mv(ana,"compra",1870,d(-3),{desc:"Pão, leite e café (exemplo)",venc:d(27)});
+  mv(jose,"compra",12500,d(-12),{desc:"Gás e mercado (exemplo)",venc:d(2)}); mv(jose,"compra",8900,d(-2),{desc:"Bebidas (exemplo)",venc:d(28)});
+  mv(rita,"compra",3200,d(-20),{desc:"Frios (exemplo)",venc:d(10)}); mv(rita,"pag",3200,d(-1),{forma:"Dinheiro"});
+  salvar(); render(); toast("Dados de exemplo carregados. Apague em Configurações quando quiser começar.");
+}
+
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => { document.querySelectorAll(".tab").forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); $("#"+x.dataset.p).hidden = !on; }); if(t.dataset.p === "pConfig") preencherConfig(); });
+$("#btnNovoCliente").onclick = () => abrirCliente();
+$("#busca").oninput = render; $("#filtro").onchange = render; $("#mesMov").onchange = renderMov;
+if(db.clientes.length && !db.movs.some(m => m.tipo === "compra" && situacao(m.cliente).saldo > 0)) $("#filtro").value = "todos";
+render();
+</script>
+</body>
+</html>

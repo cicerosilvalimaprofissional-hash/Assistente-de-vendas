@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f0643c">
+<title>Kit IA na Prática · PrestaVip</title>
+<style>
+:root{--bg:#f7f1ea;--side:#fffaf5;--card:#fff;--fg:#1d1a26;--muted:#6b6577;--line:#ece3d9;--brand:#f0643c;--brand-2:#ff8a5c;--brand-fg:#fff;--lilas:#7c5cff;--lilas-bg:#efeaff;--ok:#16a36b;--ok-bg:#e2f6ec}
+@media (prefers-color-scheme:dark){:root{--bg:#141219;--side:#1b1822;--card:#211d2a;--fg:#efeaf6;--muted:#a59fb3;--line:#322c3e;--brand:#ff7a4f;--brand-2:#ff9a73;--brand-fg:#1a0d07;--lilas:#a58fff;--lilas-bg:#2a2343;--ok:#4fd39a;--ok-bg:#13301f;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100%}
+aside{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;padding:4px 10px 14px}
+.logo svg{flex:none}
+.nav{display:flex;align-items:center;gap:10px;border:0;background:transparent;border-radius:10px;padding:9px 12px;cursor:pointer;text-align:left;font-weight:600;color:var(--fg)}
+.nav:hover{background:var(--lilas-bg)}
+.nav[aria-current="page"]{background:var(--lilas-bg);color:var(--lilas)}
+.nav svg{width:18px;height:18px;flex:none}
+.nav.novo{background:var(--lilas-bg);color:var(--lilas);margin-bottom:8px}
+.spacer{flex:1}
+main{padding:22px max(16px,env(safe-area-inset-right)) 70px max(16px,env(safe-area-inset-left));max-width:1100px;width:100%;margin:0 auto;display:grid;gap:16px;align-content:start}
+h1{margin:0;font-size:24px;letter-spacing:-.3px}
+h2{margin:0;font-size:18px}
+.sub{color:var(--muted);margin:2px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.hero{text-align:center;padding:30px 18px;gap:16px;justify-items:center}
+.hero .quick,.hero .ask{width:100%}
+.hero .spark{color:var(--lilas)}
+.hero h1{font-size:26px}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.q{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:16px 12px;cursor:pointer;display:grid;gap:8px;justify-items:center;font-weight:700}
+.q:hover{border-color:var(--lilas)}
+.q svg{width:26px;height:26px}
+.ask{display:flex;gap:8px;align-items:flex-end;border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 14px;background:var(--card)}
+.ask textarea{border:0;outline:0;resize:none;flex:1;background:transparent;padding:6px 0;min-height:44px;border-radius:0}
+.ask textarea:focus{outline:none}
+.ask:focus-within{border-color:var(--lilas)}
+.send{width:40px;height:40px;border-radius:50%;border:0;background:var(--lilas);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+label{display:grid;gap:4px;font-size:13.5px;color:var(--muted);font-weight:600}
+input,select,textarea{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible,.nav:focus-visible{outline:2px solid var(--lilas);outline-offset:1px}
+.btn{border:1px solid var(--brand);background:var(--brand);color:var(--brand-fg);border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--brand)}
+.btn.lilas{background:var(--lilas);border-color:var(--lilas);color:#fff}
+.btn.sm{padding:6px 10px;font-size:13.5px}
+.btn.wa{background:#1f9e55;border-color:#1f9e55;color:#fff}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer;font-weight:600;font-size:13.5px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:6px;cursor:pointer;text-align:left;align-content:start;position:relative}
+.pc:hover{border-color:var(--brand)}
+.pc b{font-size:15px;padding-right:22px}
+.pc span{color:var(--muted);font-size:13.5px}
+.tag{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.fav{position:absolute;top:10px;right:10px;border:0;background:transparent;cursor:pointer;font-size:18px;line-height:1;color:var(--muted)}
+.fav[aria-pressed="true"]{color:#e0a100}
+pre{white-space:pre-wrap;word-break:break-word;margin:0;font:inherit;background:var(--bg);border-radius:10px;padding:12px;max-height:380px;overflow:auto}
+.ias{display:flex;gap:8px;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:13px;margin:0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.prog{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.prog i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-weight:500;color:var(--fg);font-size:14.5px}
+.ck input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--ok)}
+.ck.feito span{text-decoration:line-through;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .h{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;text-align:center}
+.dia{background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:96px;padding:6px;display:flex;flex-direction:column;gap:4px;cursor:pointer;min-width:0}
+.dia.fora{opacity:.4}.dia.hoje{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+.dia .n{font-size:12px;font-weight:700;color:var(--muted)}
+.ev{font-size:11.5px;border-radius:6px;padding:3px 5px;background:var(--lilas-bg);color:var(--lilas);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.pronto{background:#fff2d6;color:#9a6400}.ev.publicado{background:var(--ok-bg);color:var(--ok)}
+@media (prefers-color-scheme:dark){.ev.pronto{background:#3a2c0b;color:#f0bb4b}}
+.legenda{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+dialog{border:none;border-radius:16px;padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 40px);background:var(--card);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(20,10,30,.55)}
+.dlg{padding:18px;display:grid;gap:12px}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:60;max-width:90vw;text-align:center}
+.mtop{display:none}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  aside{position:fixed;inset:auto 0 0 0;top:auto;height:auto;flex-direction:row;padding:6px max(6px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--line);z-index:40;justify-content:space-around;gap:0}
+  aside .logo,aside .spacer,.nav.novo{display:none}
+  .nav{flex-direction:column;gap:2px;font-size:11px;padding:6px 4px;flex:1;justify-content:center;text-align:center}
+  .mtop{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px}
+  main{padding-bottom:110px}
+  .hero{padding:22px 14px}.hero h1{font-size:21px}
+  .q{grid-auto-flow:column;justify-content:start;align-items:center;padding:12px 14px;text-align:left}
+  .dia{min-height:62px;padding:4px}.ev{font-size:0;height:6px;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0643c" stroke-width="2.2" stroke-linejoin="round"><path d="M12 2l2.6 6.8L21.5 12l-6.9 3.2L12 22l-2.6-6.8L2.5 12l6.9-3.2z"/></svg>Kit IA na Prática</div>
+  <button class="nav novo" type="button" data-v="assist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Novo pedido</button>
+  <button class="nav" type="button" data-v="assist" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2 5.2L19.5 10l-5.5 2-2 5.5-2-5.5L4.5 10 10 8.2z"/></svg>Assistente</button>
+  <button class="nav" type="button" data-v="prompts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Prompts</button>
+  <button class="nav" type="button" data-v="modelos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Modelos</button>
+  <button class="nav" type="button" data-v="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>Checklists</button>
+  <button class="nav" type="button" data-v="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendário</button>
+  <div class="spacer"></div>
+  <button class="nav" type="button" data-v="config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Meu negócio</button>
+</aside>
+
+<main>
+  <div class="mtop"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0643c" stroke-width="2.2" stroke-linejoin="round"><path d="M12 2l2.6 6.8L21.5 12l-6.9 3.2L12 22l-2.6-6.8L2.5 12l6.9-3.2z"/></svg>Kit IA na Prática</div>
+
+  <!-- ASSISTENTE -->
+  <section id="v-assist" class="view">
+    <div class="card hero">
+      <svg class="spark" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l2.6 6.8L21.5 12l-6.9 3.2L12 22l-2.6-6.8L2.5 12l6.9-3.2z"/></svg>
+      <h1 id="saud">Olá! Como posso ajudar no seu negócio hoje?</h1>
+      <p class="sub" id="perfilAviso" hidden>Dica: preencha <a href="#" data-go="config">Meu negócio</a> uma vez. Assim todo pedido já vai com os dados do seu negócio e a resposta da IA sai sob medida.</p>
+      <div class="quick">
+        <button class="q" type="button" data-cat="redes"><svg viewBox="0 0 24 24" fill="none" stroke="#f0643c" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Criar posts para redes sociais</button>
+        <button class="q" type="button" data-cat="atend"><svg viewBox="0 0 24 24" fill="none" stroke="#7c5cff" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 12h.01M12 12h.01M15 12h.01"/></svg>Responder clientes</button>
+        <button class="q" type="button" data-cat="prod"><svg viewBox="0 0 24 24" fill="none" stroke="#e0a100" stroke-width="2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Aumentar minha produtividade</button>
+      </div>
+      <form class="ask" id="fAsk">
+        <textarea id="askTxt" rows="2" placeholder="Digite sua solicitação…" aria-label="Sua solicitação"></textarea>
+        <button class="send" type="submit" aria-label="Montar pedido"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+      </form>
+      <p class="hint">O Kit monta o pedido completo, com os dados do seu negócio, e abre na IA que você escolher: ChatGPT, Claude ou Gemini.</p>
+    </div>
+    <div class="card" id="favBox" hidden><h2>Seus favoritos</h2><div class="grid" id="favList"></div></div>
+    <div class="card" id="hojeBox"><h2>Hoje no calendário</h2><div id="hojeList"></div></div>
+  </section>
+
+  <!-- PROMPTS -->
+  <section id="v-prompts" class="view" hidden>
+    <div><h1>Prompts prontos</h1><p class="sub"><span id="nPrompts"></span> pedidos prontos para a IA. Escolha um, complete os campos e abra na IA.</p></div>
+    <div class="bar"><input type="search" id="buscaP" placeholder="Buscar prompt. Ex.: legenda, cobrança, preço" style="flex:1 1 240px" aria-label="Buscar prompt"></div>
+    <div class="chips" id="catChips"></div>
+    <div class="grid" id="listaP"></div>
+  </section>
+
+  <!-- MODELOS -->
+  <section id="v-modelos" class="view" hidden>
+    <div><h1>Modelos de uso</h1><p class="sub">Mensagens prontas para o WhatsApp. Não precisam de IA: escolha, complete e envie.</p></div>
+    <div class="chips" id="grpChips"></div>
+    <div class="grid" id="listaM"></div>
+  </section>
+
+  <!-- CHECKLISTS -->
+  <section id="v-check" class="view" hidden>
+    <div><h1>Checklists de produtividade</h1><p class="sub">Marque o que já fez. O progresso fica salvo.</p></div>
+    <div class="grid" id="listaC" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))"></div>
+  </section>
+
+  <!-- CALENDÁRIO -->
+  <section id="v-cal" class="view" hidden>
+    <div class="bar" style="justify-content:space-between"><div><h1>Calendário de conteúdo</h1><p class="sub">Planeje o mês e crie cada post com IA em um toque.</p></div>
+      <div class="bar"><button class="btn ghost sm" type="button" id="calAnt" aria-label="Mês anterior">‹</button><b id="calMes" style="min-width:150px;text-align:center"></b><button class="btn ghost sm" type="button" id="calProx" aria-label="Próximo mês">›</button></div></div>
+    <div class="bar"><button class="btn" type="button" id="calGerar">Sugerir conteúdos do mês</button><button class="btn ghost" type="button" id="calNovo">+ Adicionar post</button>
+      <span class="legenda"><span><i style="background:var(--lilas)"></i>Ideia</span><span><i style="background:#e0a100"></i>Pronto</span><span><i style="background:var(--ok)"></i>Publicado</span></span></div>
+    <div class="cal" id="cal"></div>
+    <p class="hint" id="calResumo"></p>
+  </section>
+
+  <!-- CONFIG -->
+  <section id="v-config" class="view" hidden>
+    <div><h1>Meu negócio</h1><p class="sub">Preencha uma vez. Estes dados entram automaticamente em todos os prompts e modelos.</p></div>
+    <form class="card" id="fPerfil">
+      <div class="two">
+        <label>Nome do negócio<input id="pf-negocio" maxlength="60" placeholder="Ex.: Doces da Bia"></label>
+        <label>Segmento<input id="pf-segmento" maxlength="60" placeholder="Ex.: confeitaria artesanal"></label>
+        <label>Cidade e bairro<input id="pf-cidade" maxlength="60" placeholder="Ex.: Campinas, Taquaral"></label>
+        <label>Público principal<input id="pf-publico" maxlength="100" placeholder="Ex.: mães de 25 a 45 anos que fazem festas em casa"></label>
+      </div>
+      <label>Produtos ou serviços principais<textarea id="pf-produtos" rows="2" maxlength="300" placeholder="Ex.: bolos de festa, bolo de pote, doces finos, kits de aniversário"></textarea></label>
+      <div class="two">
+        <label>Tom de voz<select id="pf-tom"><option>próximo e simpático</option><option>profissional e objetivo</option><option>divertido e descontraído</option><option>sofisticado e elegante</option><option>acolhedor e calmo</option></select></label>
+        <label>Diferencial<input id="pf-diferencial" maxlength="120" placeholder="Ex.: ingredientes naturais e entrega no mesmo dia"></label>
+        <label>Horário de atendimento<input id="pf-horario" maxlength="80" placeholder="Ex.: de segunda a sábado, das 9h às 18h"></label>
+        <label>Endereço<input id="pf-endereco" maxlength="120"></label>
+        <label>Chave Pix<input id="pf-pix" maxlength="80"></label>
+        <label>Link (catálogo, site ou Google)<input id="pf-link" maxlength="200"></label>
+      </div>
+      <div class="acts"><button class="btn" type="submit">Salvar</button></div>
+    </form>
+    <div class="card"><h2>Backup</h2><p class="hint">Favoritos, checklists, calendário e perfil ficam salvos só neste navegador. Baixe um backup de vez em quando e guarde no Google Drive, no e-mail ou no WhatsApp.</p>
+      <div class="bar"><button class="btn" id="btnBackup" type="button">Baixar backup</button><label class="btn ghost" style="display:inline-block;cursor:pointer">Restaurar backup<input type="file" id="fRestaurar" accept=".json,application/json" hidden></label></div></div>
+    <p class="hint" style="text-align:center">Kit IA na Prática · PrestaVip · Funciona sem internet. Seus dados não saem do seu aparelho.</p>
+  </section>
+</main>
+</div>
+
+<dialog id="dPrompt"><div class="dlg">
+  <div><span class="tag" id="dpCat"></span><h2 id="dpTit"></h2><p class="sub" id="dpDesc"></p></div>
+  <div id="dpCampos" class="two"></div>
+  <p class="hint" id="dpFalta" hidden>Alguns dados do seu negócio estão vazios e aparecem entre colchetes. Preencha em <b>Meu negócio</b> para respostas melhores.</p>
+  <pre id="dpTexto"></pre>
+  <div class="ias">
+    <button class="btn lilas" type="button" data-ia="chatgpt">Abrir no ChatGPT</button>
+    <button class="btn lilas" type="button" data-ia="claude">Abrir no Claude</button>
+    <button class="btn lilas" type="button" data-ia="gemini">Abrir no Gemini</button>
+    <button class="btn ghost" type="button" id="dpCopiar">Copiar</button>
+  </div>
+  <div class="acts"><button class="btn ghost sm" type="button" id="dpFechar">Fechar</button></div>
+</div></dialog>
+
+<dialog id="dModelo"><div class="dlg">
+  <h2 id="dmTit"></h2>
+  <div id="dmCampos" class="two"></div>
+  <pre id="dmTexto"></pre>
+  <div class="two"><label>WhatsApp do cliente (opcional)<input id="dmTel" inputmode="tel" placeholder="(11) 91234-5678"></label></div>
+  <div class="acts"><button class="btn ghost" type="button" id="dmCopiar">Copiar</button><button class="btn wa" type="button" id="dmWa">Enviar no WhatsApp</button><button class="btn ghost sm" type="button" id="dmFechar">Fechar</button></div>
+</div></dialog>
+
+<dialog id="dPost"><form class="dlg" id="fPost" method="dialog">
+  <h2 id="dpoTit">Post</h2>
+  <div class="two">
+    <label>Data<input type="date" id="poData" required></label>
+    <label>Rede<select id="poRede"><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>WhatsApp (status)</option><option>LinkedIn</option><option>YouTube</option></select></label>
+    <label>Formato<select id="poFormato"><option>Post</option><option>Reels</option><option>Carrossel</option><option>Stories</option><option>Vídeo</option></select></label>
+    <label>Situação<select id="poStatus"><option value="ideia">Ideia</option><option value="pronto">Pronto</option><option value="publicado">Publicado</option></select></label>
+  </div>
+  <label>Tema<input id="poTema" required maxlength="120" placeholder="Ex.: Dica útil: como conservar o bolo"></label>
+  <label>Anotações<textarea id="poNota" rows="3" maxlength="1000" placeholder="Legenda, ideia de foto, link..."></textarea></label>
+  <div class="bar"><button class="btn lilas" type="button" id="poIA">Criar este post com IA</button></div>
+  <div class="acts"><button class="btn ghost" type="button" id="poExcluir" style="margin-right:auto;color:#c0392b;border-color:#c0392b">Excluir</button><button class="btn ghost" value="cancel" formnovalidate>Cancelar</button><button class="btn" value="ok">Salvar</button></div>
+</form></dialog>
+
+<script>
+/* ===== Conteúdo do Kit IA na Prática ===== */
+const CATS = {
+  redes: {nome: "Redes sociais", cor: "#f0643c"},
+  atend: {nome: "Atendimento", cor: "#7c5cff"},
+  vendas: {nome: "Vendas e marketing", cor: "#e0a100"},
+  prod: {nome: "Produtividade", cor: "#16a36b"},
+  gestao: {nome: "Gestão e finanças", cor: "#2f7fd8"}
+};
+/* {negocio} {segmento} {cidade} {publico} {produtos} {tom} {diferencial} vêm do perfil. Campos próprios: [{k, l, ph, multi}] */
+const PROMPTS = [
+ {id:"p01",cat:"redes",t:"30 ideias de posts para o mês",d:"Um mês inteiro de conteúdo, variado e com objetivo.",c:[{k:"rede",l:"Rede social",ph:"Instagram"}],
+  x:"Crie 30 ideias de posts para o {rede} do meu negócio para os próximos 30 dias.\nVarie entre: dicas úteis, bastidores, produto em destaque, prova social, perguntas para o público e ofertas.\nPara cada ideia, diga: dia, formato (post, carrossel, Reels ou stories), título e uma frase sobre o que mostrar.\nEntregue em uma tabela."},
+ {id:"p02",cat:"redes",t:"Legenda envolvente para um post",d:"Gancho forte, texto curto e chamada para ação.",c:[{k:"tema",l:"Sobre o que é o post",ph:"lançamento do bolo de pote de ninho"},{k:"objetivo",l:"Objetivo",ph:"gerar pedidos pelo WhatsApp"}],
+  x:"Escreva 3 opções de legenda para um post sobre: {tema}.\nObjetivo do post: {objetivo}.\nCada legenda deve ter: uma primeira linha que prende a atenção, até 5 linhas de texto, emojis com moderação e uma chamada para ação clara no final.\nNo fim, sugira 8 hashtags (misture locais de {cidade} e do segmento)."},
+ {id:"p03",cat:"redes",t:"Roteiro de Reels ou TikTok (30 segundos)",d:"Cena por cena, com texto na tela e fala.",c:[{k:"tema",l:"Tema do vídeo",ph:"3 erros ao escolher um chuveiro"}],
+  x:"Crie um roteiro de vídeo curto (Reels/TikTok) de até 30 segundos sobre: {tema}.\nFormato: tabela com tempo, o que aparece na cena, texto na tela e fala.\nComece com um gancho nos 3 primeiros segundos e termine com uma chamada para ação.\nO vídeo deve poder ser gravado com celular, sem equipamento profissional.\nNo final, escreva a legenda do vídeo."},
+ {id:"p04",cat:"redes",t:"Carrossel educativo de 7 slides",d:"Conteúdo que gera salvamentos e compartilhamentos.",c:[{k:"tema",l:"Tema",ph:"como conservar bolos na geladeira"}],
+  x:"Crie um carrossel de 7 slides para Instagram sobre: {tema}.\nSlide 1: título que desperta curiosidade. Slides 2 a 6: uma ideia por slide, com no máximo 25 palavras cada. Slide 7: resumo e chamada para ação mencionando {negocio}.\nPara cada slide, sugira também uma imagem ou ícone."},
+ {id:"p05",cat:"redes",t:"Bio do Instagram",d:"Clara, com o que você faz e como comprar.",c:[],
+  x:"Escreva 5 opções de bio para o Instagram do meu negócio, com até 150 caracteres cada.\nCada bio deve dizer o que eu faço, para quem, onde atendo e como comprar ou chamar no WhatsApp.\nUse no máximo 3 emojis."},
+ {id:"p06",cat:"redes",t:"Sequência de stories que vende",d:"5 stories em ordem, do interesse à compra.",c:[{k:"produto",l:"Produto ou serviço",ph:"kit de limpeza de pele"}],
+  x:"Crie uma sequência de 5 stories para vender: {produto}.\nOrdem: 1) problema ou desejo do cliente, 2) apresentação do produto, 3) prova (resultado, depoimento ou bastidor), 4) oferta e condição, 5) chamada para ação com enquete ou caixa de perguntas.\nPara cada story, diga o texto na tela e o que mostrar na imagem ou vídeo."},
+ {id:"p07",cat:"redes",t:"Responder comentário público",d:"Resposta educada que ajuda a vender.",c:[{k:"comentario",l:"Comentário recebido",ph:"Quanto custa? Entrega no centro?",multi:true}],
+  x:"Recebi este comentário público em uma rede social:\n\"{comentario}\"\nEscreva 3 opções de resposta curta e simpática. Se a pessoa perguntou preço, convide para continuar no WhatsApp ou no direct sem soar como fuga. Se for crítica, responda com calma e ofereça resolver no privado."},
+ {id:"p08",cat:"redes",t:"Hashtags locais e de nicho",d:"Para ser encontrado por quem está perto.",c:[{k:"tema",l:"Tema do post",ph:"marmitas fitness"}],
+  x:"Sugira 25 hashtags para um post sobre {tema}, separadas em 3 grupos: locais (bairros e cidade de {cidade}), do nicho de {segmento} e gerais.\nEvite hashtags banidas ou genéricas demais, como #love."},
+ {id:"p09",cat:"redes",t:"Post de bastidores",d:"Mostra o trabalho real e gera confiança.",c:[{k:"fato",l:"O que aconteceu hoje",ph:"preparamos 80 encomendas para uma festa",multi:true}],
+  x:"Transforme este bastidor em um post: {fato}.\nQuero: uma legenda que mostre o cuidado e o trabalho por trás do resultado, sem exagero, terminando com uma pergunta para o público comentar.\nSugira também 3 ideias de foto ou vídeo para acompanhar."},
+ {id:"p10",cat:"redes",t:"Post de depoimento de cliente",d:"Transforma um elogio em prova social.",c:[{k:"depoimento",l:"Mensagem do cliente",ph:"Amei o atendimento, chegou rapidinho!",multi:true}],
+  x:"Um cliente mandou este depoimento: \"{depoimento}\".\nCrie: 1) uma legenda agradecendo e reforçando o benefício que ele citou, 2) um texto curto para colocar sobre o print da conversa, 3) uma frase pedindo para outros clientes contarem a experiência.\nNão invente nada que o cliente não disse."},
+ {id:"p11",cat:"redes",t:"Plano de conteúdo da semana",d:"Segunda a sábado, com formato e objetivo.",c:[{k:"foco",l:"Foco da semana",ph:"promoção de aniversário da loja"}],
+  x:"Monte um plano de conteúdo de segunda a sábado com foco em: {foco}.\nPara cada dia: rede, formato, tema, objetivo (atrair, engajar ou vender) e a primeira frase da legenda.\nEquilibre: no máximo 2 posts de venda direta na semana."},
+ {id:"p12",cat:"redes",t:"Uma ideia, cinco formatos",d:"Reaproveite um assunto em vários conteúdos.",c:[{k:"ideia",l:"Ideia ou assunto",ph:"por que nosso pão é de fermentação natural"}],
+  x:"Pegue esta ideia: {ideia}.\nTransforme em 5 conteúdos diferentes: post com foto, carrossel, roteiro de Reels de 20 segundos, sequência de 3 stories e mensagem para a lista de transmissão do WhatsApp.\nEscreva o texto completo de cada um."},
+
+ {id:"p13",cat:"atend",t:"Responder mensagem de cliente",d:"Resposta clara e profissional para qualquer situação.",c:[{k:"msg",l:"Mensagem do cliente",ph:"Oi, vocês fazem entrega no sábado?",multi:true},{k:"info",l:"Informações para a resposta",ph:"entregamos sábado até 14h, taxa R$ 8",multi:true}],
+  x:"Um cliente mandou esta mensagem no WhatsApp:\n\"{msg}\"\nInformações que tenho para responder: {info}\nEscreva 2 opções de resposta: uma curta e uma mais completa. Seja cordial, responda exatamente o que foi perguntado e termine conduzindo para o próximo passo (pedido, agendamento ou pagamento)."},
+ {id:"p14",cat:"atend",t:"Contornar a objeção \"está caro\"",d:"Mostrar valor sem dar desconto de cara.",c:[{k:"produto",l:"Produto ou serviço",ph:"instalação de ar-condicionado"},{k:"preco",l:"Preço",ph:"R$ 450"}],
+  x:"O cliente achou caro o meu {produto}, que custa {preco}.\nEscreva 3 respostas diferentes que mostrem o valor (o que está incluso, garantia, qualidade, economia no longo prazo, nosso diferencial: {diferencial}) sem desmerecer o cliente e sem dar desconto logo de início.\nNo final, sugira uma alternativa caso o orçamento dele seja realmente menor (versão mais simples ou parcelamento)."},
+ {id:"p15",cat:"atend",t:"Responder reclamação com empatia",d:"Acalma, assume e resolve.",c:[{k:"reclamacao",l:"Reclamação",ph:"O pedido chegou atrasado e frio.",multi:true}],
+  x:"Recebi esta reclamação:\n\"{reclamacao}\"\nEscreva uma resposta que: 1) reconhece o problema sem dar desculpas, 2) pede desculpas de forma sincera, 3) explica o que vou fazer para resolver agora, 4) diz o que vou mudar para não acontecer de novo.\nTom: humano e respeitoso. Depois, sugira 2 formas de compensar o cliente que caibam no bolso de um pequeno negócio."},
+ {id:"p16",cat:"atend",t:"Mensagem de pós-venda",d:"Fideliza e abre espaço para a próxima compra.",c:[{k:"produto",l:"O que o cliente comprou",ph:"bolo de aniversário"}],
+  x:"Escreva 3 mensagens de pós-venda para mandar no WhatsApp a quem comprou {produto}:\n1) no dia seguinte, perguntando se gostou;\n2) depois de 7 dias, com uma dica de uso ou cuidado;\n3) depois de 30 dias, convidando para comprar de novo, sem parecer insistente.\nMensagens curtas, com o nome do cliente como [nome]."},
+ {id:"p17",cat:"atend",t:"Pedir avaliação no Google",d:"Mais avaliações, mais clientes novos.",c:[],
+  x:"Escreva 3 mensagens curtas pedindo ao cliente uma avaliação do {negocio} no Google, com espaço para o link [link].\nExplique em uma frase por que a avaliação ajuda um pequeno negócio. Não ofereça brindes em troca de avaliação positiva."},
+ {id:"p18",cat:"atend",t:"Cobrança gentil",d:"Lembra sem constranger.",c:[{k:"valor",l:"Valor em aberto",ph:"R$ 120,00"},{k:"venc",l:"Vencimento",ph:"dia 10"}],
+  x:"Escreva 3 mensagens de cobrança para um cliente com {valor} em aberto, vencido em {venc}:\n1) lembrete amigável,\n2) segunda mensagem, um pouco mais firme, oferecendo parcelar,\n3) última mensagem, firme e educada, com prazo final.\nInclua espaço para a chave Pix [pix]. Nunca use ameaça nem exponha o cliente."},
+ {id:"p19",cat:"atend",t:"Respostas rápidas do WhatsApp Business",d:"As 15 perguntas que você mais recebe, já respondidas.",c:[],
+  x:"Liste as 15 perguntas que clientes de um negócio de {segmento} mais fazem no WhatsApp.\nPara cada uma, escreva uma resposta rápida pronta para salvar no WhatsApp Business, com um atalho sugerido (por exemplo, /horario).\nOnde faltar informação minha, deixe [entre colchetes]."},
+ {id:"p20",cat:"atend",t:"Reativar cliente sumido",d:"Traz de volta quem não compra há tempo.",c:[{k:"tempo",l:"Há quanto tempo não compra",ph:"3 meses"}],
+  x:"Escreva 3 mensagens para clientes que não compram há {tempo}.\nUma com novidade, uma com pergunta sincera (\"sentimos sua falta, aconteceu algo?\") e uma com um convite especial.\nMensagens curtas, pessoais e sem pressão."},
+ {id:"p21",cat:"atend",t:"Avisar atraso ou mudança de prazo",d:"Transparência que mantém a confiança.",c:[{k:"situacao",l:"O que aconteceu",ph:"o fornecedor atrasou a peça, entrega vai para quinta",multi:true}],
+  x:"Preciso avisar um cliente sobre esta situação: {situacao}.\nEscreva uma mensagem honesta que explique o motivo em uma frase, informe o novo prazo, peça desculpas e ofereça uma alternativa, se houver."},
+ {id:"p22",cat:"atend",t:"Responder pedido de desconto",d:"Negociar sem perder margem.",c:[{k:"produto",l:"Produto ou serviço",ph:"pacote de 10 aulas"}],
+  x:"Um cliente pediu desconto no {produto}.\nEscreva 3 respostas: uma que mantém o preço mostrando o valor, uma que oferece um bônus em vez de desconto, e uma que dá um desconto pequeno com uma condição (pagamento à vista, compra maior ou indicação)."},
+
+ {id:"p23",cat:"vendas",t:"Montar uma oferta irresistível",d:"Produto, bônus, garantia e urgência real.",c:[{k:"produto",l:"Produto ou serviço",ph:"consultoria de organização"}],
+  x:"Me ajude a montar uma oferta para {produto} para o público {publico}.\nInclua: promessa principal em uma frase, o que a pessoa recebe, 2 ou 3 bônus de baixo custo para mim, garantia possível para o meu negócio, motivo real para comprar agora (sem inventar escassez falsa) e o texto final da oferta."},
+ {id:"p24",cat:"vendas",t:"Mensagem para lista de transmissão",d:"Promoção que não parece spam.",c:[{k:"promo",l:"Promoção ou novidade",ph:"2 pizzas grandes por R$ 79 nesta sexta"}],
+  x:"Escreva 3 versões de mensagem para lista de transmissão do WhatsApp sobre: {promo}.\nCada uma com até 6 linhas, começando com uma frase que desperta interesse, explicando a condição com clareza e terminando com como pedir.\nInclua uma versão bem curta para status do WhatsApp."},
+ {id:"p25",cat:"vendas",t:"Campanha para data comemorativa",d:"Do aquecimento ao último dia.",c:[{k:"data",l:"Data",ph:"Dia das Mães"}],
+  x:"Crie uma campanha de vendas para {data}, adequada ao meu negócio.\nInclua: 3 ideias de oferta ou kit, um cronograma de 10 dias (aquecimento, lançamento e últimos dias), 5 ideias de posts e 3 mensagens para o WhatsApp."},
+ {id:"p26",cat:"vendas",t:"Descrição de produto que vende",d:"Para catálogo, site ou marketplace.",c:[{k:"produto",l:"Produto",ph:"tábua de frios para 10 pessoas"},{k:"detalhes",l:"Detalhes",ph:"queijos, salames, frutas, serve 10",multi:true}],
+  x:"Escreva uma descrição de venda para: {produto}.\nDetalhes: {detalhes}.\nEstrutura: título atrativo, 2 frases sobre o benefício principal, lista de 5 itens do que está incluso ou das características, para quem é ideal e chamada para ação.\nCrie também uma versão curta, de até 200 caracteres, para catálogo do WhatsApp."},
+ {id:"p27",cat:"vendas",t:"Roteiro de abordagem de venda",d:"Para ligar ou chamar um cliente novo.",c:[{k:"canal",l:"Canal",ph:"WhatsApp"}],
+  x:"Crie um roteiro de abordagem pelo {canal} para oferecer meus produtos ou serviços a um cliente novo.\nEtapas: abertura, pergunta para entender a necessidade, apresentação em 2 frases, resposta para \"vou pensar\" e fechamento.\nTom natural, nada de script robótico."},
+ {id:"p28",cat:"vendas",t:"Promoções sem dar desconto",d:"Vender mais sem diminuir o preço.",c:[],
+  x:"Sugira 12 ideias de promoção para o meu negócio que não sejam desconto direto, como brinde, combo, frete grátis acima de um valor, programa de pontos ou indicação premiada.\nPara cada ideia, diga como fazer e o custo aproximado."},
+ {id:"p29",cat:"vendas",t:"Anúncio para Instagram e Facebook",d:"3 versões para testar.",c:[{k:"produto",l:"O que anunciar",ph:"aulas de reforço escolar"}],
+  x:"Escreva 3 versões de anúncio para Instagram e Facebook sobre {produto}, para o público {publico} em {cidade}.\nCada versão: título de até 40 caracteres, texto principal de até 125 caracteres e chamada para ação.\nUma versão foca na dor, outra no desejo e outra na prova social. Sugira também a imagem de cada uma."},
+ {id:"p30",cat:"vendas",t:"Nome e slogan",d:"Para negócio, produto ou campanha.",c:[{k:"para",l:"Nome para quê",ph:"nova linha de doces fit"}],
+  x:"Sugira 15 nomes e 10 slogans para: {para}.\nNomes curtos, fáceis de falar e de escrever. Para os 5 melhores nomes, explique o porquê.\nLembre-me de conferir se o nome já está registrado no INPI e se o perfil está livre no Instagram."},
+ {id:"p31",cat:"vendas",t:"Texto de lançamento",d:"Para apresentar um produto novo.",c:[{k:"produto",l:"Produto novo",ph:"bolo de pote de pistache"}],
+  x:"Escreva o texto de lançamento de {produto} em 3 versões: post para o feed, mensagem para o WhatsApp e e-mail curto.\nMostre a novidade, por que vale experimentar, o preço como [preço] e como pedir."},
+ {id:"p32",cat:"vendas",t:"Combos para aumentar o ticket",d:"O cliente leva mais e sai satisfeito.",c:[],
+  x:"Com base nos meus produtos ({produtos}), sugira 6 combos ou kits para aumentar o valor de cada venda.\nPara cada um: nome, o que inclui, para quem é e como calcular o preço do combo para que ainda tenha lucro."},
+
+ {id:"p33",cat:"prod",t:"Planejar minha semana",d:"Prioridades, horários e folga.",c:[{k:"tarefas",l:"Tudo o que preciso fazer",ph:"entregar 3 orçamentos, comprar material, gravar 2 vídeos...",multi:true}],
+  x:"Estas são as minhas tarefas da semana:\n{tarefas}\nOrganize em um plano de segunda a sábado, colocando o mais importante no começo do dia, agrupando tarefas parecidas e deixando tempo livre para imprevistos.\nDiga também o que eu poderia delegar ou eliminar."},
+ {id:"p34",cat:"prod",t:"Priorizar tarefas",d:"O que fazer agora, depois, delegar ou cortar.",c:[{k:"lista",l:"Lista de tarefas",ph:"",multi:true}],
+  x:"Classifique estas tarefas em 4 grupos (urgente e importante, importante e não urgente, urgente e não importante, nem urgente nem importante):\n{lista}\nDepois, me diga as 3 tarefas que devo fazer primeiro e por quê."},
+ {id:"p35",cat:"prod",t:"Montar uma rotina diária",d:"Rotina realista para quem toca o negócio.",c:[{k:"horario",l:"Horário de trabalho",ph:"8h às 18h"}],
+  x:"Monte uma rotina diária para quem é dono de um pequeno negócio de {segmento}, trabalhando das {horario}.\nInclua blocos para atendimento, produção, conteúdo para redes sociais, finanças e pausas.\nSugira o que fazer com IA em cada bloco para ganhar tempo."},
+ {id:"p36",cat:"prod",t:"Transformar anotação em lista de tarefas",d:"Cole áudio transcrito, bilhete ou ideia solta.",c:[{k:"texto",l:"Anotação ou áudio transcrito",ph:"",multi:true}],
+  x:"Transforme esta anotação em uma lista de tarefas clara, com verbo no início de cada item, responsável (se houver) e prazo sugerido:\n{texto}"},
+ {id:"p37",cat:"prod",t:"Resumir um texto",d:"Contrato, e-mail longo, regra nova.",c:[{k:"texto",l:"Texto",ph:"",multi:true}],
+  x:"Resuma o texto abaixo em linguagem simples:\n1) do que se trata, em 2 frases;\n2) os pontos mais importantes, em tópicos;\n3) o que eu preciso fazer, se houver algo;\n4) prazos e valores citados.\nTexto:\n{texto}"},
+ {id:"p38",cat:"prod",t:"Escrever e-mail profissional",d:"Para fornecedor, cliente ou parceiro.",c:[{k:"assunto",l:"O que o e-mail precisa dizer",ph:"pedir prazo maior para pagar o fornecedor",multi:true}],
+  x:"Escreva um e-mail profissional sobre: {assunto}.\nQuero: assunto do e-mail, texto objetivo e cordial e uma despedida. Faça uma versão formal e outra mais próxima."},
+ {id:"p39",cat:"prod",t:"Padronizar um processo",d:"Checklist para fazer sempre do mesmo jeito.",c:[{k:"tarefa",l:"Tarefa",ph:"abrir a loja de manhã"}],
+  x:"Crie um checklist passo a passo para a tarefa: {tarefa}.\nCada passo com no máximo uma linha, em ordem, incluindo o que conferir no final. Pense em quem está fazendo pela primeira vez."},
+ {id:"p40",cat:"prod",t:"Treinar um funcionário",d:"Guia simples de uma função.",c:[{k:"funcao",l:"Função",ph:"atendente do balcão"}],
+  x:"Crie um guia de treinamento para a função de {funcao} no meu negócio.\nInclua: responsabilidades, como atender o cliente (com exemplos de frases), erros comuns a evitar e um checklist do primeiro dia."},
+ {id:"p41",cat:"prod",t:"Pauta de reunião",d:"Reunião curta e com decisão.",c:[{k:"tema",l:"Tema da reunião",ph:"organização das entregas de dezembro"}],
+  x:"Crie uma pauta de reunião de até 30 minutos sobre: {tema}.\nInclua: objetivo, tópicos com tempo de cada um, perguntas para decidir e um modelo de ata com responsáveis e prazos."},
+ {id:"p42",cat:"prod",t:"Ajuda para decidir",d:"Prós, contras e riscos de uma escolha.",c:[{k:"decisao",l:"Decisão",ph:"contratar um ajudante ou comprar uma máquina",multi:true}],
+  x:"Preciso decidir: {decisao}.\nMonte uma tabela de prós e contras de cada opção, os riscos, o custo aproximado e as perguntas que devo responder antes de decidir. No final, diga qual escolha faz mais sentido e em que situação a outra seria melhor."},
+
+ {id:"p43",cat:"gestao",t:"Calcular preço de venda",d:"Passo a passo para não vender no prejuízo.",c:[{k:"produto",l:"Produto ou serviço",ph:"bolo de 2 kg"},{k:"custos",l:"Custos que você sabe",ph:"ingredientes R$ 45, embalagem R$ 6, 3 horas de trabalho",multi:true}],
+  x:"Me ajude a calcular o preço de venda de {produto}.\nCustos que eu sei: {custos}.\nExplique passo a passo: custo direto, rateio das despesas fixas, valor da minha hora de trabalho, taxas (cartão e aplicativo) e margem de lucro.\nFaça perguntas sobre o que faltar e mostre o cálculo final em uma tabela."},
+ {id:"p44",cat:"gestao",t:"Analisar as vendas do mês",d:"O que os números estão dizendo.",c:[{k:"numeros",l:"Números do mês",ph:"faturamento, gastos, produtos mais vendidos...",multi:true}],
+  x:"Analise estes números do meu negócio:\n{numeros}\nDiga: o que está indo bem, o que preocupa, 3 hipóteses para o resultado e 5 ações práticas para o próximo mês."},
+ {id:"p45",cat:"gestao",t:"Reduzir custos",d:"Onde cortar sem perder qualidade.",c:[{k:"gastos",l:"Principais gastos",ph:"aluguel, energia, embalagens, gasolina...",multi:true}],
+  x:"Estes são os principais gastos do meu negócio: {gastos}.\nSugira 10 formas de reduzir custos, começando pelas que dão mais resultado com menos esforço. Para cada uma, estime a economia possível."},
+ {id:"p46",cat:"gestao",t:"Metas do mês",d:"Metas claras e o plano para chegar lá.",c:[{k:"objetivo",l:"Objetivo",ph:"faturar R$ 8 mil em dezembro"}],
+  x:"Meu objetivo é: {objetivo}.\nTransforme em metas específicas e mensuráveis, divididas por semana, com as ações diárias necessárias e os números que devo acompanhar."},
+ {id:"p47",cat:"gestao",t:"Analisar um concorrente",d:"Aprender com quem está ao lado.",c:[{k:"concorrente",l:"O que você sabe do concorrente",ph:"preço, perfil no Instagram, pontos fortes...",multi:true}],
+  x:"Com base nestas informações sobre um concorrente: {concorrente}.\nCompare com o meu negócio (diferencial: {diferencial}) e diga onde ele é mais forte, onde eu posso me destacar e 5 ações para atrair o cliente que hoje compra dele, sem falar mal da concorrência."},
+ {id:"p48",cat:"gestao",t:"Ideias de novos produtos ou serviços",d:"Para faturar mais com o que você já sabe fazer.",c:[],
+  x:"Sugira 10 ideias de novos produtos ou serviços que façam sentido para o meu negócio e para o público {publico}.\nPara cada ideia: investimento inicial aproximado, dificuldade e como testar a demanda gastando pouco antes de lançar."},
+ {id:"p49",cat:"gestao",t:"Plano para um mês fraco",d:"Ações rápidas quando as vendas caem.",c:[],
+  x:"As vendas caíram este mês. Crie um plano de ação de 15 dias com ações que custam pouco e dão resultado rápido: falar com clientes antigos, ofertas, parcerias locais e conteúdo.\nOrganize por dia e diga como medir se está funcionando."},
+ {id:"p50",cat:"gestao",t:"Pesquisa de satisfação",d:"Perguntas curtas que o cliente responde.",c:[],
+  x:"Crie uma pesquisa de satisfação com no máximo 6 perguntas para clientes do meu negócio, pronta para o Google Formulários ou para o WhatsApp.\nInclua a pergunta de 0 a 10 sobre recomendar, uma pergunta aberta e uma mensagem convidando a responder."}
+];
+
+const MODELOS = [
+ {g:"Atendimento",t:"Boas-vindas",x:"Olá, {cliente}! Que bom ter você aqui na {negocio} 😊\nComo posso ajudar? Se quiser, já te mando nosso catálogo e os horários."},
+ {g:"Atendimento",t:"Fora do horário",x:"Olá, {cliente}! Recebemos sua mensagem. Nosso atendimento é {horario}. Assim que voltarmos, te respondemos por aqui. Obrigado pela paciência!"},
+ {g:"Atendimento",t:"Horário e endereço",x:"Nosso horário é {horario}.\nEndereço: {endereco}.\nSe preferir, fazemos entrega. É só me falar o bairro que eu calculo a taxa."},
+ {g:"Atendimento",t:"Enviando o catálogo",x:"Prontinho, {cliente}! Aqui está o nosso catálogo: {link}\nQualquer dúvida sobre tamanho, sabor ou prazo, é só me chamar."},
+ {g:"Vendas",t:"Orçamento enviado",x:"{cliente}, segue o seu orçamento 👇\n{link}\nEle vale até {data}. Posso reservar a data para você?"},
+ {g:"Vendas",t:"Retomar orçamento",x:"Oi, {cliente}! Tudo bem? Passando para saber se você conseguiu ver o orçamento que te mandei. Ficou alguma dúvida? Se quiser, ajusto alguma coisa para caber melhor."},
+ {g:"Vendas",t:"Confirmação de pedido",x:"Pedido confirmado, {cliente}! ✅\nResumo: {pedido}\nEntrega/retirada: {data}\nPagamento: Pix {pix}\nObrigado pela preferência!"},
+ {g:"Vendas",t:"Pedido saiu para entrega",x:"{cliente}, seu pedido acabou de sair para entrega 🛵 Deve chegar em breve. Qualquer coisa, me chama aqui!"},
+ {g:"Vendas",t:"Promoção da semana",x:"🔥 Promoção da semana na {negocio}!\n{pedido}\nVálido até {data} ou enquanto durar o estoque. Para pedir, é só responder esta mensagem."},
+ {g:"Vendas",t:"Programa de indicação",x:"{cliente}, obrigado por ser nosso cliente! Indique a {negocio} para um amigo: quando ele fizer a primeira compra, vocês dois ganham um mimo especial 🎁"},
+ {g:"Relacionamento",t:"Pós-venda",x:"Oi, {cliente}! Passando para saber: deu tudo certo com o seu pedido? Sua opinião é muito importante para a gente 💛"},
+ {g:"Relacionamento",t:"Pedido de avaliação",x:"{cliente}, que bom que você gostou! Se puder, deixe uma avaliação no Google. Leva menos de 1 minuto e ajuda muito um pequeno negócio como o nosso: {link}\nMuito obrigado!"},
+ {g:"Relacionamento",t:"Aniversário do cliente",x:"Feliz aniversário, {cliente}! 🎉 A {negocio} deseja um ano incrível. Para comemorar, preparamos um presente: {pedido}. Válido até {data}."},
+ {g:"Relacionamento",t:"Cliente sumido",x:"Oi, {cliente}! Faz um tempinho que você não aparece por aqui e sentimos sua falta 😊 Temos novidades: {pedido}. Quer que eu te mande as opções?"},
+ {g:"Relacionamento",t:"Agradecimento",x:"{cliente}, muito obrigado pela confiança! Foi um prazer atender você. Estamos sempre por aqui quando precisar."},
+ {g:"Agenda",t:"Agendamento confirmado",x:"Agendamento confirmado, {cliente}! ✅\n📅 {data}\n📍 {endereco}\nSe precisar remarcar, me avise com antecedência, por favor."},
+ {g:"Agenda",t:"Lembrete de horário",x:"Oi, {cliente}! Lembrete do seu horário: {data}. Posso confirmar sua presença?"},
+ {g:"Cobrança",t:"Lembrete de vencimento",x:"Oi, {cliente}! Tudo bem? Passando para lembrar que o pagamento de {valor} vence em {data}. Pix: {pix}. Obrigado!"},
+ {g:"Cobrança",t:"Pagamento em atraso",x:"Olá, {cliente}. Notamos que o pagamento de {valor}, que venceu em {data}, ainda está em aberto. Aconteceu alguma coisa? Se precisar, podemos combinar uma forma de pagar. Pix: {pix}."},
+ {g:"Cobrança",t:"Pagamento recebido",x:"Pagamento recebido, {cliente}! ✅ Muito obrigado. Qualquer coisa, estamos à disposição."}
+];
+
+const CHECKLISTS = [
+ {id:"c1",t:"Rotina diária com IA",d:"15 minutos por dia para não deixar o negócio parado.",i:["Responder as mensagens do WhatsApp da manhã (use as Respostas rápidas)","Conferir o Calendário de conteúdo do dia","Criar a legenda do post do dia com um prompt de Redes sociais","Postar ou agendar o conteúdo do dia","Responder comentários e directs","Mandar 3 mensagens de pós-venda ou de retomada de orçamento","Anotar as tarefas de amanhã e pedir à IA para priorizar","Registrar as vendas do dia"]},
+ {id:"c2",t:"Planejamento semanal de conteúdo",d:"Faça na sexta ou no domingo.",i:["Definir o foco da semana (produto, data ou promoção)","Usar o prompt \"Plano de conteúdo da semana\"","Lançar os posts no Calendário de conteúdo","Escrever as legendas da semana de uma vez","Separar fotos e gravar os vídeos","Agendar os posts no Meta Business Suite","Preparar a mensagem da lista de transmissão"]},
+ {id:"c3",t:"Atendimento nota 10",d:"Configure uma vez e use sempre.",i:["Ativar a mensagem de saudação no WhatsApp Business","Ativar a mensagem de ausência com o horário de atendimento","Salvar as respostas rápidas das perguntas mais comuns","Montar o catálogo no WhatsApp com fotos e preços","Criar etiquetas: novo cliente, orçamento, pago, entregue","Responder em até 1 hora no horário comercial","Mandar pós-venda para todos os clientes da semana"]},
+ {id:"c4",t:"Lançar uma promoção",d:"Do planejamento ao resultado.",i:["Definir a oferta e a margem mínima","Definir data de início e de fim (urgência real)","Criar o texto da oferta com o prompt \"Montar uma oferta irresistível\"","Preparar a arte ou o vídeo","Avisar os clientes antigos na lista de transmissão","Postar no feed, nos stories e no status","Lembrar no último dia","Anotar quantas vendas a promoção trouxe"]},
+ {id:"c5",t:"Fechamento do mês",d:"30 minutos que mudam o mês seguinte.",i:["Somar o faturamento do mês","Somar os gastos e calcular o lucro","Ver quais produtos mais venderam","Cobrar os valores em aberto","Usar o prompt \"Analisar as vendas do mês\"","Definir a meta do próximo mês","Planejar as datas comemorativas do próximo mês","Fazer backup do Kit IA na Prática"]}
+];
+
+const TEMAS_SEMANA = {1:["Dica útil","atrair"],2:["Bastidores","engajar"],3:["Produto em destaque","vender"],4:["Prova social (depoimento)","engajar"],5:["Oferta ou chamada para pedir","vender"],6:["Enquete ou pergunta","engajar"],0:["Conteúdo leve ou inspiração","atrair"]};
+const FORMATOS = ["Post","Reels","Carrossel","Stories"];
+
+</script>
+<script>
+"use strict";
+const KEY = "prestavip.kitia.v1";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const z = n => String(n).padStart(2,"0");
+const iso = d => d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());
+const hoje = () => iso(new Date());
+const br = s => s ? s.split("-").reverse().join("/") : "";
+const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const DIAS = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+function toast(t){ document.querySelectorAll(".toast").forEach(x => x.remove()); const el = document.createElement("div"); el.className = "toast"; el.textContent = t; document.body.append(el); setTimeout(() => el.remove(), 3200); }
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+const PERFIL_CAMPOS = ["negocio","segmento","cidade","publico","produtos","tom","diferencial","horario","endereco","pix","link"];
+function vazio(){ return {perfil:{tom:"próximo e simpático"}, favs:[], checks:{}, posts:[], ultimos:{}}; }
+let db = (() => { try{ const d = JSON.parse(localStorage.getItem(KEY)); if(d && d.perfil) return Object.assign(vazio(), d); }catch(e){} return vazio(); })();
+function salvar(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){ toast("Não foi possível salvar neste navegador."); } }
+
+/* ---------- Montagem do pedido para a IA ---------- */
+const ROTULO = {negocio:"nome do negócio",segmento:"segmento",cidade:"cidade",publico:"público",produtos:"produtos ou serviços",tom:"tom de voz",diferencial:"diferencial"};
+function contexto(){
+  const p = db.perfil, linhas = [];
+  if(p.negocio) linhas.push("Nome do negócio: "+p.negocio);
+  if(p.segmento) linhas.push("Segmento: "+p.segmento);
+  if(p.cidade) linhas.push("Cidade: "+p.cidade);
+  if(p.publico) linhas.push("Público: "+p.publico);
+  if(p.produtos) linhas.push("Produtos ou serviços: "+p.produtos);
+  if(p.diferencial) linhas.push("Diferencial: "+p.diferencial);
+  linhas.push("Tom de voz: "+(p.tom || "próximo e simpático"));
+  return "Você é um especialista em marketing, vendas e gestão para pequenos negócios no Brasil. Responda em português do Brasil, de forma prática e direta.\n\nSobre o meu negócio:\n"+linhas.map(l => "- "+l).join("\n");
+}
+function preencher(txt, extra){
+  let falta = false;
+  const out = txt.replace(/\{(\w+)\}/g, (m, k) => {
+    if(extra && k in extra) return extra[k].trim() || (falta = true, "["+(extra.__rot?.[k] || k)+"]");
+    const v = (db.perfil[k] || "").trim(); if(v) return v; falta = true; return "["+(ROTULO[k] || k)+"]";
+  });
+  return {out, falta};
+}
+function pedidoCompleto(p, valores){
+  const rot = Object.fromEntries(p.c.map(c => [c.k, c.l.toLowerCase()]));
+  const r = preencher(p.x, Object.assign({__rot: rot}, valores));
+  return {texto: contexto()+"\n\nPedido:\n"+r.out, falta: r.falta || PERFIL_CAMPOS.slice(0,5).some(k => !(db.perfil[k]||"").trim())};
+}
+async function copiar(t){ try{ await navigator.clipboard.writeText(t); return true; }catch(e){ const ta = document.createElement("textarea"); ta.value = t; document.body.append(ta); ta.select(); let ok = false; try{ ok = document.execCommand("copy"); }catch(_){} ta.remove(); return ok; } }
+async function abrirIA(ia, texto){
+  await copiar(texto);
+  const q = encodeURIComponent(texto);
+  const url = ia === "chatgpt" ? "https://chatgpt.com/?q="+q : ia === "claude" ? "https://claude.ai/new?q="+q : "https://gemini.google.com/app";
+  window.open(url, "_blank", "noopener");
+  toast(ia === "gemini" ? "Pedido copiado. No Gemini, cole na caixa de mensagem e envie." : "Pedido copiado e aberto na IA. Se o texto não aparecer, é só colar.");
+}
+
+/* ---------- Navegação ---------- */
+function ir(v){
+  document.querySelectorAll(".view").forEach(s => s.hidden = s.id !== "v-"+v);
+  document.querySelectorAll(".nav:not(.novo)").forEach(n => { if(n.dataset.v === v) n.setAttribute("aria-current","page"); else n.removeAttribute("aria-current"); });
+  ({assist: renderAssist, prompts: renderPrompts, modelos: renderModelos, check: renderChecks, cal: renderCal, config: paraPerfil})[v]();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav").forEach(n => n.onclick = () => { ir(n.dataset.v); if(n.classList.contains("novo")){ $("#askTxt").value = ""; $("#askTxt").focus(); } });
+document.addEventListener("click", e => { const a = e.target.closest("[data-go]"); if(a){ e.preventDefault(); ir(a.dataset.go); } });
+
+/* ---------- Assistente ---------- */
+function renderAssist(){
+  const p = db.perfil;
+  $("#saud").textContent = p.negocio ? "Olá! Como posso ajudar a "+p.negocio+" hoje?" : "Olá! Como posso ajudar no seu negócio hoje?";
+  $("#perfilAviso").hidden = !!(p.negocio && p.segmento);
+  const favs = PROMPTS.filter(x => db.favs.includes(x.id));
+  $("#favBox").hidden = !favs.length; $("#favList").innerHTML = favs.map(cardPrompt).join(""); ligarCards($("#favList"));
+  const hj = db.posts.filter(x => x.data === hoje());
+  $("#hojeList").innerHTML = hj.length ? hj.map(x => '<div class="bar" style="justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)"><span><b>'+esc(x.formato)+' · '+esc(x.rede)+'</b> — '+esc(x.tema)+'</span><button class="btn lilas sm" type="button" data-post="'+x.id+'">Criar com IA</button></div>').join("")
+    : '<p class="hint">Nada planejado para hoje. <a href="#" data-go="cal">Abrir o calendário</a> e usar <b>Sugerir conteúdos do mês</b>.</p>';
+  $("#hojeList").querySelectorAll("[data-post]").forEach(b => b.onclick = () => abrirIAPost(db.posts.find(x => x.id === b.dataset.post)));
+}
+document.querySelectorAll(".q").forEach(q => q.onclick = () => { filtroCat = q.dataset.cat; ir("prompts"); });
+$("#fAsk").addEventListener("submit", e => { e.preventDefault(); const t = $("#askTxt").value.trim(); if(!t){ $("#askTxt").focus(); toast("Escreva o que você precisa. Ex.: ideias de post para o fim de semana."); return; }
+  abrirPrompt({id:"livre", cat:"prod", t:"Seu pedido", d:"Escolha a IA para enviar.", c:[], x: t+"\n\nSe faltar alguma informação importante, me faça até 3 perguntas antes de responder."}); });
+$("#askTxt").addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); $("#fAsk").requestSubmit(); } });
+
+/* ---------- Prompts ---------- */
+let filtroCat = "todos";
+function cardPrompt(p){ const c = CATS[p.cat]; const fav = db.favs.includes(p.id);
+  return '<div class="pc" role="button" tabindex="0" data-p="'+p.id+'"><span class="tag" style="color:'+c.cor+'">'+c.nome+'</span><b>'+esc(p.t)+'</b><span>'+esc(p.d)+'</span><button class="fav" type="button" aria-pressed="'+fav+'" aria-label="Favoritar" data-fav="'+p.id+'">'+(fav ? "★" : "☆")+'</button></div>'; }
+function ligarCards(box){
+  box.querySelectorAll(".pc[data-p]").forEach(el => { const abrir = e => { if(e.target.closest(".fav")) return; abrirPrompt(PROMPTS.find(x => x.id === el.dataset.p)); }; el.onclick = abrir; el.onkeydown = e => { if(e.key === "Enter") abrir(e); }; });
+  box.querySelectorAll("[data-fav]").forEach(b => b.onclick = e => { e.stopPropagation(); const id = b.dataset.fav; db.favs = db.favs.includes(id) ? db.favs.filter(x => x !== id) : [...db.favs, id]; salvar(); renderPrompts(); renderAssist(); });
+}
+function renderPrompts(){
+  $("#nPrompts").textContent = PROMPTS.length;
+  const chips = [["todos","Todos"],["favs","★ Favoritos"],...Object.entries(CATS).map(([k,v]) => [k, v.nome])];
+  $("#catChips").innerHTML = chips.map(([k,n]) => '<button class="chip" type="button" aria-pressed="'+(filtroCat===k)+'" data-c="'+k+'">'+n+'</button>').join("");
+  $("#catChips").querySelectorAll(".chip").forEach(b => b.onclick = () => { filtroCat = b.dataset.c; renderPrompts(); });
+  const q = $("#buscaP").value.trim().toLowerCase().normalize("NFD").replace(/\p{M}/gu,"");
+  const lista = PROMPTS.filter(p => (filtroCat === "todos" || (filtroCat === "favs" ? db.favs.includes(p.id) : p.cat === filtroCat)) && (!q || (p.t+" "+p.d+" "+p.x).toLowerCase().normalize("NFD").replace(/\p{M}/gu,"").includes(q)));
+  $("#listaP").innerHTML = lista.length ? lista.map(cardPrompt).join("") : '<p class="hint">Nenhum prompt encontrado.'+(filtroCat === "favs" ? " Toque na estrela ☆ de um prompt para guardar nos favoritos." : "")+'</p>';
+  ligarCards($("#listaP"));
+}
+$("#buscaP").oninput = renderPrompts;
+
+let pAtual = null;
+function abrirPrompt(p, valores){
+  pAtual = p; const c = CATS[p.cat];
+  $("#dpCat").textContent = p.id === "livre" ? "Pedido livre" : c.nome; $("#dpCat").style.color = c.cor;
+  $("#dpTit").textContent = p.t; $("#dpDesc").textContent = p.d;
+  const ult = db.ultimos[p.id] || {};
+  $("#dpCampos").innerHTML = p.c.map(f => '<label'+(f.multi ? ' style="grid-column:1/-1"' : '')+'>'+esc(f.l)+(f.multi ? '<textarea rows="3" data-k="'+f.k+'" placeholder="'+esc(f.ph)+'">'+esc((valores||{})[f.k] ?? ult[f.k] ?? "")+'</textarea>' : '<input data-k="'+f.k+'" placeholder="'+esc(f.ph)+'" value="'+esc((valores||{})[f.k] ?? ult[f.k] ?? "")+'">')+'</label>').join("");
+  $("#dpCampos").hidden = !p.c.length;
+  $("#dpCampos").querySelectorAll("[data-k]").forEach(i => i.oninput = atualizarPrompt);
+  atualizarPrompt(); $("#dPrompt").showModal();
+  const prim = $("#dpCampos [data-k]"); if(prim && !prim.value) prim.focus();
+}
+function valoresPrompt(){ return Object.fromEntries([...$("#dpCampos").querySelectorAll("[data-k]")].map(i => [i.dataset.k, i.value])); }
+function atualizarPrompt(){ const r = pedidoCompleto(pAtual, valoresPrompt()); $("#dpTexto").textContent = r.texto; $("#dpFalta").hidden = !r.falta; }
+function guardarUltimos(){ if(pAtual.id !== "livre" && pAtual.id !== "post"){ db.ultimos[pAtual.id] = valoresPrompt(); salvar(); } }
+document.querySelectorAll("[data-ia]").forEach(b => b.onclick = () => { guardarUltimos(); abrirIA(b.dataset.ia, $("#dpTexto").textContent); });
+$("#dpCopiar").onclick = async () => { guardarUltimos(); toast(await copiar($("#dpTexto").textContent) ? "Pedido copiado. Cole na IA que você usa." : "Não consegui copiar. Selecione o texto e copie."); };
+$("#dpFechar").onclick = () => $("#dPrompt").close();
+
+/* ---------- Modelos ---------- */
+let filtroGrp = "Todos";
+const ROT_M = {cliente:"Nome do cliente",data:"Data",valor:"Valor",pedido:"Pedido, oferta ou presente"};
+function renderModelos(){
+  const grupos = ["Todos", ...new Set(MODELOS.map(m => m.g))];
+  $("#grpChips").innerHTML = grupos.map(g => '<button class="chip" type="button" aria-pressed="'+(filtroGrp===g)+'" data-g="'+g+'">'+g+'</button>').join("");
+  $("#grpChips").querySelectorAll(".chip").forEach(b => b.onclick = () => { filtroGrp = b.dataset.g; renderModelos(); });
+  const lista = MODELOS.map((m,i) => ({...m, i})).filter(m => filtroGrp === "Todos" || m.g === filtroGrp);
+  $("#listaM").innerHTML = lista.map(m => '<div class="pc" role="button" tabindex="0" data-m="'+m.i+'"><span class="tag" style="color:var(--lilas)">'+esc(m.g)+'</span><b>'+esc(m.t)+'</b><span>'+esc(m.x.slice(0,90))+'…</span></div>').join("");
+  $("#listaM").querySelectorAll("[data-m]").forEach(el => { el.onclick = () => abrirModelo(MODELOS[+el.dataset.m]); el.onkeydown = e => { if(e.key === "Enter") abrirModelo(MODELOS[+el.dataset.m]); }; });
+}
+let mAtual = null;
+function abrirModelo(m){
+  mAtual = m; $("#dmTit").textContent = m.t;
+  const ks = [...new Set([...m.x.matchAll(/\{(\w+)\}/g)].map(x => x[1]))].filter(k => k in ROT_M);
+  $("#dmCampos").innerHTML = ks.map(k => '<label>'+ROT_M[k]+'<input data-k="'+k+'"'+(k === "data" ? ' placeholder="Ex.: sexta, 20/12, às 15h"' : '')+'></label>').join(""); $("#dmCampos").hidden = !ks.length;
+  $("#dmCampos").querySelectorAll("input").forEach(i => i.oninput = atualizarModelo); $("#dmTel").value = "";
+  atualizarModelo(); $("#dModelo").showModal();
+}
+function textoModelo(){ const v = Object.fromEntries([...$("#dmCampos").querySelectorAll("input")].map(i => [i.dataset.k, i.value]));
+  return mAtual.x.replace(/\{(\w+)\}/g, (m, k) => { if(k in v) return v[k].trim() || "["+ROT_M[k].toLowerCase()+"]"; const p = (db.perfil[k] || "").trim(); return p || "["+k+"]"; }); }
+function atualizarModelo(){ $("#dmTexto").textContent = textoModelo(); }
+$("#dmCopiar").onclick = async () => toast(await copiar(textoModelo()) ? "Mensagem copiada." : "Não consegui copiar. Selecione o texto e copie.");
+$("#dmWa").onclick = () => { let d = $("#dmTel").value.replace(/\D/g,""); if(d && d.length <= 11) d = "55"+d.replace(/^0+/,""); window.open("https://wa.me/"+d+"?text="+encodeURIComponent(textoModelo()), "_blank", "noopener"); };
+$("#dmFechar").onclick = () => $("#dModelo").close();
+
+/* ---------- Checklists ---------- */
+function renderChecks(){
+  $("#listaC").innerHTML = CHECKLISTS.map(c => { const st = db.checks[c.id] || []; const n = st.filter(Boolean).length; const pct = Math.round(100*n/c.i.length);
+    return '<div class="card"><div class="bar" style="justify-content:space-between"><h2>'+esc(c.t)+'</h2><b style="color:var(--ok)">'+n+'/'+c.i.length+'</b></div><p class="hint">'+esc(c.d)+'</p><div class="prog"><i style="width:'+pct+'%"></i></div>'+
+      c.i.map((it,k) => '<label class="ck'+(st[k] ? " feito" : "")+'"><input type="checkbox" data-c="'+c.id+'" data-k="'+k+'"'+(st[k] ? " checked" : "")+'><span>'+esc(it)+'</span></label>').join("")+
+      '<div class="acts"><button class="btn ghost sm" type="button" data-zera="'+c.id+'">Recomeçar</button></div></div>'; }).join("");
+  $("#listaC").querySelectorAll("input[type=checkbox]").forEach(i => i.onchange = () => { const a = db.checks[i.dataset.c] || []; a[+i.dataset.k] = i.checked; db.checks[i.dataset.c] = a; salvar(); renderChecks();
+    const c = CHECKLISTS.find(x => x.id === i.dataset.c); if(a.filter(Boolean).length === c.i.length) toast("Checklist concluído! 🎉"); });
+  $("#listaC").querySelectorAll("[data-zera]").forEach(b => b.onclick = () => { db.checks[b.dataset.zera] = []; salvar(); renderChecks(); });
+}
+
+/* ---------- Calendário ---------- */
+let calRef = new Date(); calRef.setDate(1);
+function renderCal(){
+  const y = calRef.getFullYear(), m = calRef.getMonth();
+  $("#calMes").textContent = MESES[m]+" de "+y;
+  const ini = new Date(y, m, 1 - new Date(y, m, 1).getDay()); const cells = [];
+  for(let i = 0; i < 42; i++){ const d = new Date(ini); d.setDate(ini.getDate()+i); if(i >= 35 && d.getMonth() !== m) break; cells.push(d); }
+  $("#cal").innerHTML = DIAS.map(d => '<div class="h">'+d+'</div>').join("") + cells.map(d => { const s = iso(d); const evs = db.posts.filter(p => p.data === s);
+    return '<div class="dia'+(d.getMonth() !== m ? " fora" : "")+(s === hoje() ? " hoje" : "")+'" data-d="'+s+'" role="button" tabindex="0" aria-label="'+br(s)+'"><span class="n">'+d.getDate()+'</span>'+evs.map(e => '<span class="ev '+e.status+'" data-e="'+e.id+'" title="'+esc(e.formato+" · "+e.tema)+'">'+esc(e.formato)+': '+esc(e.tema)+'</span>').join("")+'</div>'; }).join("");
+  $("#cal").querySelectorAll(".dia").forEach(el => { const abrir = e => { const ev = e.target.closest("[data-e]"); abrirPost(ev ? db.posts.find(p => p.id === ev.dataset.e) : null, el.dataset.d); }; el.onclick = abrir; el.onkeydown = e => { if(e.key === "Enter") abrir(e); }; });
+  const doMes = db.posts.filter(p => p.data.startsWith(y+"-"+z(m+1)));
+  $("#calResumo").textContent = doMes.length ? doMes.length+" posts no mês: "+doMes.filter(p => p.status === "publicado").length+" publicados, "+doMes.filter(p => p.status === "pronto").length+" prontos e "+doMes.filter(p => p.status === "ideia").length+" ideias." : "Nenhum post neste mês ainda. Toque em um dia ou em Sugerir conteúdos do mês.";
+}
+$("#calAnt").onclick = () => { calRef.setMonth(calRef.getMonth()-1); renderCal(); };
+$("#calProx").onclick = () => { calRef.setMonth(calRef.getMonth()+1); renderCal(); };
+$("#calNovo").onclick = () => abrirPost(null, hoje().slice(0,7) === iso(calRef).slice(0,7) ? hoje() : iso(calRef));
+$("#calGerar").onclick = () => {
+  const y = calRef.getFullYear(), m = calRef.getMonth(); const fim = new Date(y, m+1, 0).getDate(); let n = 0, f = 0;
+  for(let d = 1; d <= fim; d++){ const dt = new Date(y, m, d); const s = iso(dt); if(s < hoje() || dt.getDay() === 0 || db.posts.some(p => p.data === s)) continue;
+    const [tema] = TEMAS_SEMANA[dt.getDay()]; db.posts.push({id:uid(), data:s, rede:"Instagram", formato:FORMATOS[f++ % FORMATOS.length], status:"ideia", tema, nota:""}); n++; }
+  salvar(); renderCal(); toast(n ? n+" sugestões criadas. Toque em cada uma para ajustar o tema e criar com IA." : "Os dias deste mês já têm posts (ou já passaram).");
+};
+let poAtual = null;
+function abrirPost(p, data){
+  poAtual = p; $("#dpoTit").textContent = p ? "Editar post" : "Novo post";
+  $("#poData").value = p?.data || data; $("#poRede").value = p?.rede || "Instagram"; $("#poFormato").value = p?.formato || "Post"; $("#poStatus").value = p?.status || "ideia";
+  $("#poTema").value = p?.tema || ""; $("#poNota").value = p?.nota || ""; $("#poExcluir").hidden = !p; $("#dPost").showModal(); if(!p) $("#poTema").focus();
+}
+function lerPost(){ return {data:$("#poData").value, rede:$("#poRede").value, formato:$("#poFormato").value, status:$("#poStatus").value, tema:$("#poTema").value.trim(), nota:$("#poNota").value.trim()}; }
+$("#fPost").addEventListener("submit", e => { if(e.submitter?.value !== "ok") return; const v = lerPost(); if(!v.tema || !v.data){ e.preventDefault(); toast("Preencha a data e o tema."); return; }
+  if(poAtual) Object.assign(poAtual, v); else db.posts.push({id:uid(), ...v}); salvar(); renderCal(); toast("Post salvo no calendário."); });
+$("#poExcluir").onclick = () => { if(poAtual && confirm("Excluir este post do calendário?")){ db.posts = db.posts.filter(p => p !== poAtual); salvar(); $("#dPost").close(); renderCal(); } };
+$("#poIA").onclick = () => { const v = lerPost(); if(!v.tema){ toast("Escreva o tema do post primeiro."); $("#poTema").focus(); return; } $("#dPost").close(); abrirIAPost(v); };
+function abrirIAPost(v){
+  const guia = {Reels:"um roteiro de vídeo de até 30 segundos (cena, texto na tela e fala) e a legenda", Vídeo:"um roteiro de vídeo curto e a legenda", Carrossel:"o texto de cada slide (até 7 slides) e a legenda", Stories:"uma sequência de 3 a 5 stories (texto na tela e o que mostrar)", Post:"3 opções de legenda e uma ideia de foto"}[v.formato] || "o conteúdo completo";
+  abrirPrompt({id:"post", cat:"redes", t:v.formato+" para "+v.rede+" ("+br(v.data)+")", d:"Pedido montado a partir do calendário.", c:[],
+    x:"Crie um conteúdo para "+v.rede+" no formato "+v.formato+", para publicar em "+br(v.data)+".\nTema: "+v.tema+"."+(v.nota ? "\nAnotações: "+v.nota : "")+"\nEntregue "+guia+", terminando com uma chamada para ação. Sugira também 8 hashtags."});
+}
+
+/* ---------- Perfil e backup ---------- */
+function paraPerfil(){ PERFIL_CAMPOS.forEach(k => { const el = $("#pf-"+k); if(el) el.value = db.perfil[k] || (k === "tom" ? "próximo e simpático" : ""); }); }
+$("#fPerfil").addEventListener("submit", e => { e.preventDefault(); PERFIL_CAMPOS.forEach(k => db.perfil[k] = $("#pf-"+k).value.trim()); salvar(); toast("Dados salvos. Eles já entram em todos os prompts."); });
+function baixar(nome, conteudo){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([conteudo], {type:"application/json"})); a.download = nome; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+$("#btnBackup").onclick = () => { baixar("kit-ia-backup-"+hoje()+".json", JSON.stringify(db)); toast("Backup baixado."); };
+$("#fRestaurar").onchange = e => { const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+  r.onload = () => { try{ const d = JSON.parse(r.result); if(!d.perfil || !Array.isArray(d.posts)) throw 0; if(confirm("Restaurar este backup? Os dados atuais deste aparelho serão substituídos.")){ db = Object.assign(vazio(), d); salvar(); paraPerfil(); toast("Backup restaurado."); } }
+    catch(_){ toast("Arquivo inválido. Escolha um backup do Kit IA na Prática (.json)."); } e.target.value = ""; }; r.readAsText(f); };
+
+ir("assist");
+</script>
+</body>
+</html>
